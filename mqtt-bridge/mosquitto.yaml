@@ -1,0 +1,25 @@
+---
+RecipeFormatVersion: "2020-01-25"
+ComponentName: "Mosquitto"
+ComponentVersion: "0.0.0"
+ComponentType: "aws.greengrass.generic"
+ComponentDescription: "Sample Eclipse Mosquitto MQTT Broker"
+ComponentPublisher: "AWS"
+Manifests:
+  - Platform:
+      os: "linux"
+    Name: "Linux"
+    Lifecycle:
+      Install:
+        # WARNING: Only works on Ubuntu.
+        RequiresPrivilege: true
+        script: "apt-add-repository ppa:mosquitto-dev/mosquitto-ppa && apt-get update\
+        \ && apt-get install -y mosquitto"
+      Startup:
+        # WARNING: Only works on Ubuntu.
+        RequiresPrivilege: true
+        script: "service mosquitto start"
+      Shutdown:
+        # WARNING: Only works on Ubuntu.
+        RequiresPrivilege: true
+        script: "service mosquitto stop"
