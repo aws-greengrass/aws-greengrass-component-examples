@@ -1,17 +1,11 @@
-## My Project
+## AWS Greengrass Component Examples
 
-TODO: Fill this README out!
+These examples should be taken as a starting point, and not simply deployed as-is.
+This repository contains the following examples of components. 
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+- mqtt-bridge - This component bridges a local MQTT Broker to the AWS IoT Core broker by automatically forwarding
+ messages between the device and cloud on specified topics.
 
 ## License
 
-This project is licensed under the Apache-2.0 License.
-
+These examples are licensed under the Apache 2.0 License. 
