@@ -1,0 +1,107 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.greengrass.SageMakerEdgeManager.ObjectDetection",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "Sagemaker edge manager python example of object detection deployed using Greengrassv2.",
+    "ComponentPublisher": "AWS",
+    "ComponentConfiguration": {
+        "DefaultConfiguration": {
+            "accessControl": {
+                "com.greengrass.ipc.mqttproxy": {
+                    "com.greengrass.SageMakerEdgeManager.ObjectDetection:mqttproxy:1": {
+                        "policyDescription": "Allows access to publish via topic gg/sageMakerEdgeManager/object-detection.",
+                        "operations": [
+                            "com.greengrass#PublishToIoTCore"
+                        ],
+                        "resources": [
+                            "gg/sageMakerEdgeManager/object-detection"
+                        ]
+                    }
+                }
+            },
+            "ImageName": "cat.jpeg",
+            "InferenceInterval": "3600",
+            "PublishResultsOnTopic": "gg/sageMakerEdgeManager/object-detection"
+        }
+    },
+    "ComponentDependencies": {
+        "com.greengrass.SageMakerEdgeManager.ObjectDetection.Model": {
+            "VersionRequirement": ">=1.0.0 <1.1.0",
+            "DependencyType": "HARD"
+        },
+        "aws.greengrass.SageMakerEdgeManager": {
+            "VersionRequirement": ">=1.0.0 <1.1.0",
+            "DependencyType": "HARD"
+        }
+    },
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "/amd64|x86/"
+            },
+            "Lifecycle": {
+                "setEnv": {
+                    "SMEM_OD_LABELS": "{com.greengrass.SageMakerEdgeManager.ObjectDetection.Model:artifacts:path}/labels.txt",
+                    "DEFAULT_SMEM_OD_IMAGE_DIR": "{artifacts:decompressedPath}/object_detection/sample_images/",
+                    "SMEM_OD_MODEL_DIR": "{com.greengrass.SageMakerEdgeManager.ObjectDetection.Model:configuration:/ModelPath}"
+                },
+                "run": {
+                    "script": "bash {artifacts:path}/installer.sh\npython3 {artifacts:decompressedPath}/object_detection/inference.py"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/object_detection.zip",
+                    "Unarchive": "ZIP",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/installer.sh",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        },
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "aarch64"
+            },
+            "Lifecycle": {
+                "setEnv": {
+                    "SMEM_OD_LABELS": "{com.greengrass.SageMakerEdgeManager.ObjectDetection.Model:artifacts:path}/labels.txt",
+                    "DEFAULT_SMEM_OD_IMAGE_DIR": "{artifacts:decompressedPath}/object_detection/sample_images/",
+                    "SMEM_OD_MODEL_DIR": "{com.greengrass.SageMakerEdgeManager.ObjectDetection.Model:configuration:/ModelPath}"
+                },
+                "run": {
+                    "script": "bash {artifacts:path}/installer.sh\npython3 {artifacts:decompressedPath}/object_detection/inference.py"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/object_detection.zip",
+                    "Unarchive": "ZIP",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/installer.sh",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,107 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.greengrass.SageMakerEdgeManager.ImageClassification",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "Sagemaker edge manager python example of image classification deployed using Greengrassv2.",
+    "ComponentPublisher": "AWS",
+    "ComponentConfiguration": {
+        "DefaultConfiguration": {
+            "accessControl": {
+                "com.greengrass.ipc.mqttproxy": {
+                    "com.greengrass.SageMakerEdgeManager.ImageClassification:mqttproxy:1": {
+                        "policyDescription": "Allows access to publish via topic gg/sageMakerEdgeManager/image-classification.",
+                        "operations": [
+                            "com.greengrass#PublishToIoTCore"
+                        ],
+                        "resources": [
+                            "gg/sageMakerEdgeManager/image-classification"
+                        ]
+                    }
+                }
+            },
+            "ImageName": "cat.jpeg",
+            "InferenceInterval": "3600",
+            "PublishResultsOnTopic": "gg/sageMakerEdgeManager/image-classification"
+        }
+    },
+    "ComponentDependencies": {
+        "aws.greengrass.SageMakerEdgeManager": {
+            "VersionRequirement": ">=1.0.0 <1.1.0",
+            "DependencyType": "HARD"
+        },
+        "com.greengrass.SageMakerEdgeManager.ImageClassification.Model": {
+            "VersionRequirement": ">=1.0.0 <1.1.0",
+            "DependencyType": "HARD"
+        }
+    },
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "/amd64|x86/"
+            },
+            "Lifecycle": {
+                "setEnv": {
+                    "DEFAULT_SMEM_IC_IMAGE_DIR": "{artifacts:decompressedPath}/image_classification/sample_images/",
+                    "SMEM_IC_LABELS": "{com.greengrass.SageMakerEdgeManager.ImageClassification.Model:artifacts:path}/labels.txt",
+                    "SMEM_IC_MODEL_DIR": "{com.greengrass.SageMakerEdgeManager.ImageClassification.Model:configuration:/ModelPath}"
+                },
+                "run": {
+                    "script": "bash {artifacts:path}/installer.sh\npython3 {artifacts:decompressedPath}/image_classification/inference.py"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/image_classification.zip",
+                    "Unarchive": "ZIP",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/installer.sh",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        },
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "aarch64"
+            },
+            "Lifecycle": {
+                "setEnv": {
+                    "DEFAULT_SMEM_IC_IMAGE_DIR": "{artifacts:decompressedPath}/image_classification/sample_images/",
+                    "SMEM_IC_LABELS": "{com.greengrass.SageMakerEdgeManager.ImageClassification.Model:artifacts:path}/labels.txt",
+                    "SMEM_IC_MODEL_DIR": "{com.greengrass.SageMakerEdgeManager.ImageClassification.Model:configuration:/ModelPath}"
+                },
+                "run": {
+                    "script": "bash {artifacts:path}/installer.sh\npython3 {artifacts:decompressedPath}/image_classification/inference.py"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/image_classification.zip",
+                    "Unarchive": "ZIP",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/installer.sh",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        }
+    ]
+}
