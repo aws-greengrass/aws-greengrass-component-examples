@@ -7,7 +7,7 @@
     "ComponentConfiguration": {
         "DefaultConfiguration": {
             "accessControl": {
-                "com.greengrass.ipc.mqttproxy": {
+                "aws.greengrass.ipc.mqttproxy": {
                     "com.greengrass.SageMakerEdgeManager.ObjectDetection:mqttproxy:1": {
                         "policyDescription": "Allows access to publish via topic gg/sageMakerEdgeManager/object-detection.",
                         "operations": [
@@ -52,7 +52,7 @@
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/object_detection.zip",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/$COMPONENT_VERSION$/object_detection.zip",
                     "Unarchive": "ZIP",
                     "Permission": {
                         "Read": "OWNER",
@@ -60,7 +60,7 @@
                     }
                 },
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/installer.sh",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/$COMPONENT_VERSION$/installer.sh",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",
@@ -86,7 +86,7 @@
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/object_detection.zip",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/$COMPONENT_VERSION$/object_detection.zip",
                     "Unarchive": "ZIP",
                     "Permission": {
                         "Read": "OWNER",
@@ -94,7 +94,7 @@
                     }
                 },
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/1.0.0/installer.sh",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection/$COMPONENT_VERSION$/installer.sh",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",

@@ -22,7 +22,7 @@
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/1.0.0/gg-sagemakerEdgeManager-darknet-$REGION$-x64-1.0.tar.gz",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/$COMPONENT_VERSION$/gg-sagemakerEdgeManager-darknet-$REGION$-x64-1.0.tar.gz",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",
@@ -30,7 +30,7 @@
                     }
                 },
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/1.0.0/labels.txt",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/$COMPONENT_VERSION$/labels.txt",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "ALL",
@@ -51,7 +51,7 @@
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/1.0.0/gg-sagemakerEdgeManager-darknet-$REGION$-armv8-1.0.tar.gz",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/$COMPONENT_VERSION$/gg-sagemakerEdgeManager-darknet-$REGION$-armv8-1.0.tar.gz",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",
@@ -59,7 +59,7 @@
                     }
                 },
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/1.0.0/labels.txt",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ObjectDetection.Model/$COMPONENT_VERSION$/labels.txt",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "ALL",

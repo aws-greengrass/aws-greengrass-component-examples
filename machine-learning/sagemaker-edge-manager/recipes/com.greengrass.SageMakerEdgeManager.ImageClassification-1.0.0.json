@@ -7,7 +7,7 @@
     "ComponentConfiguration": {
         "DefaultConfiguration": {
             "accessControl": {
-                "com.greengrass.ipc.mqttproxy": {
+                "aws.greengrass.ipc.mqttproxy": {
                     "com.greengrass.SageMakerEdgeManager.ImageClassification:mqttproxy:1": {
                         "policyDescription": "Allows access to publish via topic gg/sageMakerEdgeManager/image-classification.",
                         "operations": [
@@ -52,7 +52,7 @@
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/image_classification.zip",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/$COMPONENT_VERSION$/image_classification.zip",
                     "Unarchive": "ZIP",
                     "Permission": {
                         "Read": "OWNER",
@@ -60,7 +60,7 @@
                     }
                 },
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/installer.sh",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/$COMPONENT_VERSION$/installer.sh",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",
@@ -86,7 +86,7 @@
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/image_classification.zip",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/$COMPONENT_VERSION$/image_classification.zip",
                     "Unarchive": "ZIP",
                     "Permission": {
                         "Read": "OWNER",
@@ -94,7 +94,7 @@
                     }
                 },
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/1.0.0/installer.sh",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification/$COMPONENT_VERSION$/installer.sh",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",

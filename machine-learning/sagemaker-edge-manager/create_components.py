@@ -1,3 +1,6 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 import argparse
 import json
 import os
@@ -8,13 +11,19 @@ import boto3
 
 def create_artifacts():
     for component in os.listdir(artifacts_path):
+        if component.startswith("."):
+            continue
         component_path = os.path.join(artifacts_path, component)
         for version in os.listdir(component_path):
+            if version.startswith("."):
+                continue
             version_path = os.path.join(component_path, version)
-            component_latest_version = get_latest_version(component,version)
+            component_latest_version = get_latest_version(component, version)
             build = os.path.join(build_artifacts_path, component, component_latest_version)
             os.makedirs(build, mode=0o777, exist_ok=True)
             for file in os.listdir(version_path):
+                if file.startswith("."):
+                    continue
                 file_path = os.path.join(version_path, file)
                 build_file = os.path.join(build, file)
                 if os.path.isdir(file_path):
@@ -26,9 +35,6 @@ def create_artifacts():
                     rel_path = os.path.relpath(build_file, build_dir_path)
                     shutil.copy(file_path, build_file)
                     upload_artifacts(build_file, rel_path)
-            if "Model" in component:
-                rel_path = os.path.relpath(build, build_dir_path)
-                copy_sample_models(rel_path, inference_models[component])
 
 
 def create_recipes():
@@ -37,15 +43,16 @@ def create_recipes():
         with open(
             os.path.join(recipes_path, component_recipe),
         ) as f:
-            recipe = json.load(f)
+            recipe = f.read()
         component = component_recipe.split("-")
         c_name = component[0]
         c_version = component[1].split(".json")[0]
-        recipe["ComponentVersion"] = get_latest_version(c_name, c_version)
-        for manifest in recipe["Manifests"]:
-            for artifact in manifest["Artifacts"]:
-                artifact["Uri"] = artifact["Uri"].replace("$BUCKETNAME$", bucket)
-                artifact["Uri"] = artifact["Uri"].replace("$REGION$", region)
+        latest_version = get_latest_version(c_name, c_version)
+        recipe = recipe.replace("$BUCKETNAME$", bucket)
+        recipe = recipe.replace("$REGION$", region)
+        recipe = recipe.replace("$COMPONENT_VERSION$", latest_version)
+        recipe = json.loads(recipe)
+        recipe["ComponentVersion"] = latest_version
         recipe_file_name = "{}-{}.json".format(c_name, recipe["ComponentVersion"])
         with open(os.path.join(build_recipes_path, recipe_file_name), "w") as f:
             f.write(json.dumps(recipe, indent=4))
@@ -54,7 +61,11 @@ def create_recipes():
 def get_latest_version(c_name, c_version):
     try:
         account = get_account_number()
-        print("Fetching the component {} from the account: {}".format(c_name, account))
+        print(
+            "Fetching the component {} from the account: {}, region: {}".format(
+                c_name, account, region
+            )
+        )
         response = greengrass_client.list_component_versions(
             arn="arn:aws:greengrass:{}:{}:components:{}".format(region, account, c_name),
         )
@@ -134,54 +145,11 @@ def create_components():
                 exit(1)
 
 
-def copy_sample_models(path, model_names):
-    try:
-        response = s3_client.head_bucket(Bucket=public_models_bucket)
-        if response is not None and response["ResponseMetadata"]["HTTPStatusCode"] == 200:
-            for model_name in model_names:
-                key = "{}/{}".format(path, model_name)
-                s3 = boto3.resource("s3")
-                if "resnet" in model_name:
-                    inf = "image-classification"
-                else:
-                    inf = "object-detection"
-                source = {
-                    "Bucket": public_models_bucket,
-                    "Key": "models/{}/{}".format(inf, model_name),  # Replace it with key
-                }
-                destination = s3.Bucket(bucket)
-                try:
-                    destination.copy(source, key)
-                    print(
-                        "Successfully copied the model artifact {} from {} to {}".format(
-                            model_name, public_models_bucket, bucket
-                        )
-                    )
-                except Exception as e:
-                    print(
-                        "Failed to copy the model artifact {} from {} to {}.\nException: {}".format(
-                            model_name, public_models_bucket, bucket, e
-                        )
-                    )
-                    exit(1)
-        else:
-            print("Error retrieving the model bucket {}".format(public_models_bucket))
-            exit(1)
-    except Exception as e:
-        print(
-            "Failed to copy the model artifacts. Please check if the models bucket {} exists and try again. \nException: {}".format(
-                public_models_bucket, e
-            )
-        )
-        exit(1)
-
-
 def get_account_number():
     try:
-        response = iam_client.get_user()
+        response = sts_client.get_caller_identity()
         if response is not None:
-            user_arn = response["User"]["Arn"]
-            account = user_arn.split("arn:aws:iam::")[1].split(":")[0]
+            account = response["Account"]
             return account
     except Exception as e:
         print("Cannot get the account id from the credentials.\nException: {}".format(e))
@@ -197,14 +165,16 @@ build_recipes_path = os.path.join(build_dir_path, "recipes")
 
 shutil.rmtree(build_dir_path, ignore_errors=True, onerror=None)
 
-public_models_bucket = "ggv2-sagemaker-edge-manager-packaged-models"
 region = "us-east-1"
 bucket = "ggv2-example-component-artifacts"
 
 # Parse the arguments
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "--region", "-r", default=region, help="Greengrass components will be created in the region."
+    "--region",
+    "-r",
+    default=region,
+    help="Greengrass components will be created in the region.",
 )
 parser.add_argument(
     "--bucket",
@@ -215,7 +185,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 region = args.region
-bucket = args.bucket
+bucket = "{}-{}".format(args.bucket, region)
 
 inference_models = {
     "com.greengrass.SageMakerEdgeManager.ImageClassification.Model": [
@@ -228,12 +198,12 @@ inference_models = {
     ],
 }
 
-greengrass_client = boto3.client("greengrassv2")
+greengrass_client = boto3.client("greengrassv2", region_name=region)
 if region is None or region == "us-east-1":
     s3_client = boto3.client("s3", region_name=region)
 else:
     s3_client = boto3.client("s3")
-iam_client = boto3.client("iam")
+sts_client = boto3.client("sts")
 
 create_bucket()
 create_artifacts()
