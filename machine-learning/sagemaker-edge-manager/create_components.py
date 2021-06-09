@@ -5,13 +5,17 @@ import argparse
 import json
 import os
 import shutil
+import ssl
+import urllib.request
 
 import boto3
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def create_artifacts():
     for component in os.listdir(artifacts_path):
-        if component.startswith("."):
+        if component.startswith(".") and inferenceType not in component:
             continue
         component_path = os.path.join(artifacts_path, component)
         for version in os.listdir(component_path):
@@ -35,6 +39,17 @@ def create_artifacts():
                     rel_path = os.path.relpath(build_file, build_dir_path)
                     shutil.copy(file_path, build_file)
                     upload_artifacts(build_file, rel_path)
+            if ".Model" in component:
+                download_model(build, inference_models[component])
+
+
+def download_model(build, models):
+    for model in models:
+        model_url = "{}/{}".format(model_releases, model)
+        local_artifact = "{}/{}".format(build, model)
+        urllib.request.urlretrieve(model_url, local_artifact)
+        rel_path = os.path.relpath(local_artifact, build_dir_path)
+        upload_artifacts(local_artifact, rel_path)
 
 
 def create_recipes():
@@ -167,6 +182,8 @@ shutil.rmtree(build_dir_path, ignore_errors=True, onerror=None)
 
 region = "us-east-1"
 bucket = "ggv2-example-component-artifacts"
+inferenceType = ""
+model_releases = "https://github.com/aws-greengrass/aws-greengrass-component-examples/releases/download/v1.0"
 
 # Parse the arguments
 parser = argparse.ArgumentParser()
@@ -182,10 +199,18 @@ parser.add_argument(
     default=bucket,
     help="This bucket will be used to store the component artifacts.",
 )
+parser.add_argument(
+    "--inference",
+    "-i",
+    default=inferenceType,
+    help="This bucket will be used to store the component artifacts.",
+)
+
 args = parser.parse_args()
 
 region = args.region
 bucket = "{}-{}".format(args.bucket, region)
+inference = args.inferenceType
 
 inference_models = {
     "com.greengrass.SageMakerEdgeManager.ImageClassification.Model": [
