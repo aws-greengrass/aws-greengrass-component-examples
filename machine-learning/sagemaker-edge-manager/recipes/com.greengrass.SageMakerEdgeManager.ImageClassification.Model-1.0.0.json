@@ -1,0 +1,72 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.greengrass.SageMakerEdgeManager.ImageClassification.Model",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "This component provides sagemaker edge manager packaged resnet model for performing image classification.",
+    "ComponentPublisher": "AWS",
+    "ComponentConfiguration": {
+        "DefaultConfiguration": {
+            "ModelPath": "../com.greengrass.SageMakerEdgeManager.ImageClassification.Model"
+        }
+    },
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "/amd64|x86/"
+            },
+            "Lifecycle": {
+                "install": {
+                    "script": "tar xf {artifacts:path}/gg-sagemakerEdgeManager-resnet-$REGION$-x64-1.0.tar.gz -C {configuration:/ModelPath}"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification.Model/$COMPONENT_VERSION$/gg-sagemakerEdgeManager-resnet-$REGION$-x64-1.0.tar.gz",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification.Model/$COMPONENT_VERSION$/labels.txt",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "ALL",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        },
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "aarch64"
+            },
+            "Lifecycle": {
+                "install": {
+                    "script": "tar xf {artifacts:path}/gg-sagemakerEdgeManager-resnet-$REGION$-armv8-1.0.tar.gz -C {configuration:/ModelPath}"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification.Model/$COMPONENT_VERSION$/gg-sagemakerEdgeManager-resnet-$REGION$-armv8-1.0.tar.gz",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.SageMakerEdgeManager.ImageClassification.Model/$COMPONENT_VERSION$/labels.txt",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "ALL",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        }
+    ]
+}

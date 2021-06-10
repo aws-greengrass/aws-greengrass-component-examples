@@ -1,3 +1,4 @@
 target/
 *.jar
-
+.DS_Store
+build/
