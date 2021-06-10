@@ -128,6 +128,10 @@ def upload_artifacts(file_name, object_name=None):
     if object_name is None:
         object_name = file_name
     try:
+        print("Uploading artifacts to the bucket {} with key {}.".format(
+                bucket, object_name
+            )
+         )
         response = s3_client.upload_file(file_name, bucket, object_name)
     except Exception as e:
         print(
@@ -200,7 +204,7 @@ parser.add_argument(
     help="This bucket will be used to store the component artifacts.",
 )
 parser.add_argument(
-    "--inference",
+    "--inferenceType",
     "-i",
     default=inferenceType,
     help="This bucket will be used to store the component artifacts.",
