@@ -12,7 +12,6 @@ import IPCUtils as ipc_utils
 import numpy as np
 from agent_pb2 import (
     CaptureDataRequest,
-    ListModelsRequest,
     LoadModelRequest,
     PredictRequest,
     Tensor,
@@ -30,11 +29,10 @@ with open(config_utils.LABELS_FILE, "r") as f:
 
 def transform_image(im):
     if len(im.shape) == 2:
-        height, width = im.shape[:2]
         im = np.expand_dims(im, axis=2)
         nchannels = 1
     elif len(im.shape) == 3:
-        height, width, nchannels = im.shape[:3]
+        nchannels = im.shape[2]
     else:
         raise Exception("Unknown image structure")
     if nchannels == 1:

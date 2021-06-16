@@ -15,7 +15,6 @@ from awscrt.io import (
 )
 from awsiot.eventstreamrpc import Connection, LifecycleHandler, MessageAmendment
 from awsiot.greengrasscoreipc.model import (
-    QOS,
     ConfigurationUpdateEvents,
     GetConfigurationRequest,
     PublishToIoTCoreRequest,
