@@ -139,7 +139,7 @@ def upload_artifacts(file_name, object_name=None):
         object_name = file_name
     try:
         print("Uploading artifacts to the bucket {} with key {}.".format(bucket, object_name))
-        response = s3_client.upload_file(file_name, bucket, object_name)
+        s3_client.upload_file(file_name, bucket, object_name)
     except Exception as e:
         print(
             "Failed to upload the artifacts to the bucket {} with key {}.\nException: {}".format(
@@ -161,7 +161,7 @@ def create_components():
             recipe_file_path,
         ) as f:
             try:
-                response = greengrass_client.create_component_version(inlineRecipe=f.read())
+                greengrass_client.create_component_version(inlineRecipe=f.read())
             except Exception as e:
                 print(
                     "Failed to create the component using the recipe at {}.\nException: {}".format(
