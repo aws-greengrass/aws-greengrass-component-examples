@@ -1,6 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+import uuid
 from ast import literal_eval
 from datetime import datetime, timezone
 from json import dumps
@@ -10,6 +11,7 @@ import cv2
 import IPCUtils as ipc_utils
 import numpy as np
 from agent_pb2 import (
+    CaptureDataRequest,
     ListModelsRequest,
     LoadModelRequest,
     PredictRequest,
@@ -121,24 +123,27 @@ def predict(image_data):
         config_utils.MAX_NO_OF_RESULTS, config_utils.SCORE_THRESHOLD
     )
     PAYLOAD["inference-results"] = []
-
+    input_tensors = [
+        Tensor(
+            tensor_metadata=TensorMetadata(
+                name=config_utils.tensor_name,
+                data_type=5,
+                shape=config_utils.tensor_shape,
+            ),
+            byte_data=image_data.tobytes(),
+        )
+    ]
     request = PredictRequest(
         name=config_utils.MODEL_NAME,
-        tensors=[
-            Tensor(
-                tensor_metadata=TensorMetadata(
-                    name=config_utils.tensor_name,
-                    data_type=5,
-                    shape=config_utils.tensor_shape,
-                ),
-                byte_data=image_data.tobytes(),
-            )
-        ],
+        tensors=input_tensors,
     )
     response = config_utils.agent_client.Predict(request)
+    output_tensors = response.tensors
+
+    capture_data(input_tensors, output_tensors)
 
     predictions = []
-    for t in response.tensors:
+    for t in output_tensors:
         deserialized_bytes = np.frombuffer(t.byte_data, dtype=np.float32)
         predictions.append(np.asarray(deserialized_bytes).tolist())
     probabilities = predictions[0]
@@ -152,3 +157,16 @@ def predict(image_data):
         ipc_utils.IPCUtils().publish_results_to_cloud(PAYLOAD)
     else:
         config_utils.logger.info("No topic set to publish the inference results to the cloud.")
+
+
+def capture_data(input_tensors, output_tensors):
+    capture_id = uuid.uuid4()
+    capture_data_request = CaptureDataRequest(
+        model_name=config_utils.MODEL_NAME,
+        capture_id=str(capture_id),
+        input_tensors=input_tensors,
+        output_tensors=output_tensors,
+    )
+    config_utils.logger.info("Capturing the data...")
+    capture_data_response = config_utils.agent_client.CaptureData(capture_data_request)
+    config_utils.logger.info(capture_data_response)

@@ -11,7 +11,7 @@
                     "com.greengrass.SageMakerEdgeManager.ObjectDetection:mqttproxy:1": {
                         "policyDescription": "Allows access to publish via topic gg/sageMakerEdgeManager/object-detection.",
                         "operations": [
-                            "com.greengrass#PublishToIoTCore"
+                            "aws.greengrass#PublishToIoTCore"
                         ],
                         "resources": [
                             "gg/sageMakerEdgeManager/object-detection"

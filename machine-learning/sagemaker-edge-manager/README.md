@@ -40,14 +40,21 @@ Follow the steps in order to prepare the component artifacts, recipes and create
         The above command uses **us-east-1**(default) region to create **Image Classification** example components and **ggv2-example-component-artifacts-us-east-1**(default) bucket to store the component artifacts. 
     
     
-    - To specify desired region, bucket and inference type, use the following command(region name is appended to the bucket name) 
+    - To specify desired region, bucket and inference type, use the following command (region name is appended to the bucket name) 
 
         `python3 create_components.py -r region -b bucket -i inferenceType`
+
+    - To create a specific component, provide the script with the name of the component using `componentName` argument as shown below. 
+
+        `python3 create_components.py -c componentName` 
 
         ```
         region - Region where you want to create and use the greengrass components.
         bucket - Name of the bucket which is used to store the component artifacts.
         inferenceType - Type of the inference. Values: ImageClassification / ObjectDetection. 
+        componentType - Name of the component to create.
+
+        Note: Inference type and component type args are mutually exclusive. 
         ```
     - This script creates a build folder with the prepared artifacts and upload them to the s3 bucket. The sample models are downloaded from the releases section based on the parameters like region and inference type. This might take several minutes as the artifacts are prepared and uploaded to the desired S3 bucket. 
 
@@ -57,7 +64,7 @@ Follow the steps in order to prepare the component artifacts, recipes and create
 ----
 ## Deploy components
 
-Follow the documentation at [Link](Link-to-the-documentation) to deploy the inference and model components to run the inference. 
+Follow the [documentation](https://docs.aws.amazon.com/greengrass/v2/developerguide/get-started-with-edge-manager-on-greengrass.html#run-sample-sme-image-classification-inference) to deploy inference and model components and run inference on the edge using sagemaker edge manager. 
 
 
 

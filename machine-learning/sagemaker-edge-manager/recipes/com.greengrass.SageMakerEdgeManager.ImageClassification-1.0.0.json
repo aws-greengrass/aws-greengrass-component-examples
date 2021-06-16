@@ -11,7 +11,7 @@
                     "com.greengrass.SageMakerEdgeManager.ImageClassification:mqttproxy:1": {
                         "policyDescription": "Allows access to publish via topic gg/sageMakerEdgeManager/image-classification.",
                         "operations": [
-                            "com.greengrass#PublishToIoTCore"
+                            "aws.greengrass#PublishToIoTCore"
                         ],
                         "resources": [
                             "gg/sageMakerEdgeManager/image-classification"
