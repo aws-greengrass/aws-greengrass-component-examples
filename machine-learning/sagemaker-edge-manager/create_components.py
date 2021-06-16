@@ -13,9 +13,13 @@ import boto3
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def create_artifacts():
+def create_artifacts(component_arg):
     for component in os.listdir(artifacts_path):
-        if component.startswith(".") and inferenceType not in component:
+        if (
+            (component_arg != "" and component_arg != component)
+            or component.startswith(".")
+            or inferenceType not in component
+        ):
             continue
         component_path = os.path.join(artifacts_path, component)
         for version in os.listdir(component_path):
@@ -52,17 +56,23 @@ def download_model(build, models):
         upload_artifacts(local_artifact, rel_path)
 
 
-def create_recipes():
+def create_recipes(component_arg):
     os.makedirs(build_recipes_path, mode=0o777, exist_ok=True)
     for component_recipe in os.listdir(recipes_path):
+        component = component_recipe.split("-")
+        c_name = component[0]
+        c_version = component[1].split(".json")[0]
+        if (
+            (component_arg != "" and component_arg != c_name)
+            or component_recipe.startswith(".")
+            or inferenceType not in component_recipe
+        ):
+            continue
+        latest_version = get_latest_version(c_name, c_version)
         with open(
             os.path.join(recipes_path, component_recipe),
         ) as f:
             recipe = f.read()
-        component = component_recipe.split("-")
-        c_name = component[0]
-        c_version = component[1].split(".json")[0]
-        latest_version = get_latest_version(c_name, c_version)
         recipe = recipe.replace("$BUCKETNAME$", bucket)
         recipe = recipe.replace("$REGION$", region)
         recipe = recipe.replace("$COMPONENT_VERSION$", latest_version)
@@ -128,10 +138,7 @@ def upload_artifacts(file_name, object_name=None):
     if object_name is None:
         object_name = file_name
     try:
-        print("Uploading artifacts to the bucket {} with key {}.".format(
-                bucket, object_name
-            )
-         )
+        print("Uploading artifacts to the bucket {} with key {}.".format(bucket, object_name))
         response = s3_client.upload_file(file_name, bucket, object_name)
     except Exception as e:
         print(
@@ -187,7 +194,10 @@ shutil.rmtree(build_dir_path, ignore_errors=True, onerror=None)
 region = "us-east-1"
 bucket = "ggv2-example-component-artifacts"
 inferenceType = ""
-model_releases = "https://github.com/aws-greengrass/aws-greengrass-component-examples/releases/download/v1.0"
+componentName = ""
+model_releases = (
+    "https://github.com/aws-greengrass/aws-greengrass-component-examples/releases/download/v1.0"
+)
 
 # Parse the arguments
 parser = argparse.ArgumentParser()
@@ -203,18 +213,26 @@ parser.add_argument(
     default=bucket,
     help="This bucket will be used to store the component artifacts.",
 )
-parser.add_argument(
+group = parser.add_mutually_exclusive_group()
+group.add_argument(
     "--inferenceType",
     "-i",
     default=inferenceType,
-    help="This bucket will be used to store the component artifacts.",
+    help="Components needed for only this type of inference are created.",
+)
+group.add_argument(
+    "--componentName",
+    "-c",
+    default=componentName,
+    help="Name of the component to be created.",
 )
 
 args = parser.parse_args()
 
 region = args.region
 bucket = "{}-{}".format(args.bucket, region)
-inference = args.inferenceType
+inferenceType = args.inferenceType
+componentName = args.componentName
 
 inference_models = {
     "com.greengrass.SageMakerEdgeManager.ImageClassification.Model": [
@@ -235,6 +253,6 @@ else:
 sts_client = boto3.client("sts")
 
 create_bucket()
-create_artifacts()
-create_recipes()
+create_artifacts(componentName)
+create_recipes(componentName)
 create_components()

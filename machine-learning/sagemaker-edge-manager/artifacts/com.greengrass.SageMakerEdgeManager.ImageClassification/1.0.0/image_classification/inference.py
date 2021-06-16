@@ -100,7 +100,12 @@ def run_inference(new_config, config_changed):
         if config_utils.SCHEDULED_THREAD is not None:
             config_utils.SCHEDULED_THREAD.cancel()
             config_changed = False
-    predict_from_image(new_config["image"])
+    try:
+        predict_from_image(new_config["image"])
+    except Exception as e:
+        config_utils.logger.error(
+            "Error running the inference as the edge agent config changed: {}".format(e)
+        )
     config_utils.SCHEDULED_THREAD = Timer(
         int(new_config["prediction_interval_secs"]),
         run_inference,
