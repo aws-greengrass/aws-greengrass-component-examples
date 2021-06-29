@@ -1,0 +1,101 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.lambda.DLRObjectDetection.Model",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "This component provides neo-compiled yolo3 model for performing image classification.",
+    "ComponentPublisher": "AWS",
+    "ComponentConfiguration": {
+        "DefaultConfiguration": {
+            "ModelPath": "../com.lambda.DLRObjectDetection.Model"
+        }
+    },
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "/amd64|x86/"
+            },
+            "Lifecycle": {
+                "install": {
+                    "script": "tar xf {artifacts:path}/DLR-yolo3-x86_64-cpu-ImageClassification.tar.gz -C {configuration:/ModelPath}"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-x86_64-cpu-ImageClassification.tar.gz",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/labels.txt",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "ALL",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        },
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "aarch64"
+            },
+            "Lifecycle": {
+                "install": {
+                    "script": "tar xf {artifacts:path}/DLR-yolo3-aarch64-cpu-ImageClassification.tar.gz -C {configuration:/ModelPath}"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-aarch64-cpu-ImageClassification.tar.gz",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/labels.txt",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "ALL",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        },
+        {
+            "Platform": {
+                "os": "linux",
+                "architecture": "arm"
+            },
+            "Lifecycle": {
+                "install": {
+                    "script": "tar xf {artifacts:path}/DLR-yolo3-armv7l-cpu-ImageClassification.tar.gz -C {configuration:/ModelPath}"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-armv7l-cpu-ImageClassification.tar.gz",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "OWNER",
+                        "Execute": "NONE"
+                    }
+                },
+                {
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/labels.txt",
+                    "Unarchive": "NONE",
+                    "Permission": {
+                        "Read": "ALL",
+                        "Execute": "NONE"
+                    }
+                }
+            ]
+        }
+    ]
+}

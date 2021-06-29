@@ -1,0 +1,56 @@
+{
+  "lambdaArn": "$LAMBDA_ARN$",
+  "componentName": "com.lambda.DLRObjectDetection",
+  "componentVersion": "$COMPONENT_VERSION$",
+  "componentPlatforms": [
+    {
+      "name": "Linux x86",
+      "attributes": {
+        "os": "linux",
+        "architecture": "amd64"
+      }
+    },
+    {
+        "name": "Linux aarch64",
+        "attributes": {
+          "os": "linux",
+          "architecture": "aarch64"
+        }
+      },
+      {
+        "name": "Linux armv7l",
+        "attributes": {
+          "os": "linux",
+          "architecture": "arm"
+        }
+      }
+  ],
+  "componentDependencies": {
+      "com.lambda.DLRObjectDetection.Model": {
+        "versionRequirement": ">=2.2.0",
+        "dependencyType": "HARD"
+      },
+      "com.lambda.DLR": {
+        "versionRequirement": ">=1.6.0",
+        "dependencyType": "HARD"
+      }
+    
+  },
+  "componentLambdaParameters": {
+    "linuxProcessParams": {
+        "isolationMode": "NoContainer"
+    },
+    "environmentVariables": {
+        "DLR_IC_MODEL_DIR": "{com.lambda.DLRObjectDetection.Model:configuration:/ModelPath}",
+        "DLR_IC_LABELS": "{com.lambda.DLRObjectDetection.Model:artifacts:path}/labels.txt"
+    },
+    "inputPayloadEncodingType": "json",
+    "pinned": true,
+    "timeoutInSeconds": 120,
+    "statusTimeoutInSeconds": 30,
+    "maxIdleTimeInSeconds": 30,
+    "maxInstancesCount": 50,
+    "maxQueueSize": 500
+  }
+  
+}
