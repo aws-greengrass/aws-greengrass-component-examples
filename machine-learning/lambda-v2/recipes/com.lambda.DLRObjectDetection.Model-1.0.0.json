@@ -17,12 +17,12 @@
             },
             "Lifecycle": {
                 "install": {
-                    "script": "tar xf {artifacts:path}/DLR-yolo3-x86_64-cpu-ImageClassification.tar.gz -C {configuration:/ModelPath}"
+                    "script": "tar xf {artifacts:path}/DLR-yolo3-x86_64-cpu-ObjectDetection.tar.gz -C {configuration:/ModelPath}"
                 }
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-x86_64-cpu-ImageClassification.tar.gz",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-x86_64-cpu-ObjectDetection.tar.gz",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",
@@ -46,12 +46,12 @@
             },
             "Lifecycle": {
                 "install": {
-                    "script": "tar xf {artifacts:path}/DLR-yolo3-aarch64-cpu-ImageClassification.tar.gz -C {configuration:/ModelPath}"
+                    "script": "tar xf {artifacts:path}/DLR-yolo3-aarch64-cpu-ObjectDetection.tar.gz -C {configuration:/ModelPath}"
                 }
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-aarch64-cpu-ImageClassification.tar.gz",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-aarch64-cpu-ObjectDetection.tar.gz",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",
@@ -75,12 +75,12 @@
             },
             "Lifecycle": {
                 "install": {
-                    "script": "tar xf {artifacts:path}/DLR-yolo3-armv7l-cpu-ImageClassification.tar.gz -C {configuration:/ModelPath}"
+                    "script": "tar xf {artifacts:path}/DLR-yolo3-armv7l-cpu-ObjectDetection.tar.gz -C {configuration:/ModelPath}"
                 }
             },
             "Artifacts": [
                 {
-                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-armv7l-cpu-ImageClassification.tar.gz",
+                    "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-armv7l-cpu-ObjectDetection.tar.gz",
                     "Unarchive": "NONE",
                     "Permission": {
                         "Read": "OWNER",

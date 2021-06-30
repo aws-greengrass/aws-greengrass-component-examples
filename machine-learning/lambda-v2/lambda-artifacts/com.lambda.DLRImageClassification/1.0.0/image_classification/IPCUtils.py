@@ -2,19 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from json import dumps
-from os import getenv
 import awsiot.greengrasscoreipc
 import config_utils
-from awscrt.io import (
-    ClientBootstrap,
-    DefaultHostResolver,
-    EventLoopGroup,
-    SocketDomain,
-    SocketOptions,
-)
-from awsiot.eventstreamrpc import Connection, LifecycleHandler, MessageAmendment
 from awsiot.greengrasscoreipc.model import (
-    QOS,
     ConfigurationUpdateEvents,
     GetConfigurationRequest,
     PublishToIoTCoreRequest,
@@ -89,8 +79,8 @@ class ConfigUpdateHandler(awsiot.greengrasscoreipc.client.SubscribeToConfigurati
 
     def on_stream_event(self, event: ConfigurationUpdateEvents) -> None:
         config_utils.logger.info(event.configuration_update_event)
-        config_utils.UPDATED_CONFIG = True
-
+        with config_utils.condition:
+            config_utils.condition.notify()
     def on_stream_error(self, error: Exception) -> bool:
         config_utils.logger.error("Error in config update subscriber - {0}".format(error))
         return False

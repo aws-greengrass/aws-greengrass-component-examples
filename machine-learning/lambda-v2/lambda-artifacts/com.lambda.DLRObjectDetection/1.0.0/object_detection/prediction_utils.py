@@ -3,7 +3,7 @@
 
 import platform
 from ast import literal_eval
-from datetime import datetime
+from datetime import datetime, timezone
 from io import BytesIO
 from json import dumps
 from math import floor
@@ -32,13 +32,9 @@ from cv2 import (
 from dlr import DLRModel
 from numpy import (
     argsort,
-    array,
     expand_dims,
-    float32,
-    frombuffer,
     fromstring,
     load,
-    transpose,
     uint8,
 )
 
@@ -55,13 +51,13 @@ dlr_model = DLRModel(config_utils.MODEL_DIR, config_utils.DEFAULT_ACCELERATOR)
 
 def transform_image(im):
     if len(im.shape) == 2:
-        height, width = im.shape[:2]
         im = expand_dims(im, axis=2)
         nchannels = 1
     elif len(im.shape) == 3:
-        height, width, nchannels = im.shape[:3]
+        nchannels = im.shape[2]
     else:
-        raise Exception("Unknown image structure")
+        config_utils.logger.error("Unknown image structure")
+        exit(1)
     if nchannels == 1:
         im = cvtColor(im, COLOR_GRAY2RGB)
     elif nchannels == 4:
@@ -164,7 +160,7 @@ def predict(image_data):
     :return: JSON object of inference results
     """
     PAYLOAD = {}
-    PAYLOAD["timestamp"] = str(datetime.now())
+    PAYLOAD["timestamp"] = str(datetime.now(tz=timezone.utc))
     PAYLOAD["inference-type"] = "object-detection"
     PAYLOAD["inference-description"] = "Top {} predictions with score {} or above ".format(
         config_utils.MAX_NO_OF_RESULTS, config_utils.SCORE_THRESHOLD
@@ -238,7 +234,7 @@ def predict_from_cam():
         if ret == False:
             raise RuntimeError("Failed to get frame from the stream")
     if cvimage is not None:
-        return predict_from_image(cvimage)
+        predict_from_image(cvimage)
     else:
         config_utils.logger.error("Unable to capture an image using camera")
         exit(1)

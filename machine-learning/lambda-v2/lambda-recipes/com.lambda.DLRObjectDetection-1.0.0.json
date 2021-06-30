@@ -27,7 +27,7 @@
   ],
   "componentDependencies": {
       "com.lambda.DLRObjectDetection.Model": {
-        "versionRequirement": ">=2.2.0",
+        "versionRequirement": "1.0.0",
         "dependencyType": "HARD"
       },
       "com.lambda.DLR": {
@@ -41,8 +41,8 @@
         "isolationMode": "NoContainer"
     },
     "environmentVariables": {
-        "DLR_IC_MODEL_DIR": "{com.lambda.DLRObjectDetection.Model:configuration:/ModelPath}",
-        "DLR_IC_LABELS": "{com.lambda.DLRObjectDetection.Model:artifacts:path}/labels.txt"
+        "DLR_OD_MODEL_DIR": "{com.lambda.DLRObjectDetection.Model:configuration:/ModelPath}",
+        "DLR_OD_LABELS": "{com.lambda.DLRObjectDetection.Model:artifacts:path}/labels.txt"
     },
     "inputPayloadEncodingType": "json",
     "pinned": true,
@@ -52,5 +52,4 @@
     "maxInstancesCount": 50,
     "maxQueueSize": 500
   }
-  
 }

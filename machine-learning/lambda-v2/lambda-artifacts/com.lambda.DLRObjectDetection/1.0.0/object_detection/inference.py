@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from os import makedirs, path
-from threading import Timer
+from threading import Timer, Thread
 from time import sleep
 
 import config_utils
@@ -95,21 +95,25 @@ def run_inference(new_config, config_changed):
     )
     config_utils.SCHEDULED_THREAD.start()
 
+def wait_for_config_changes():
+    with config_utils.condition:
+        config_utils.condition.wait()
+        set_configuration(ipc.get_configuration())
+    wait_for_config_changes()
+
+ipc = ipc_utils.IPCUtils()
 
 # Get intial configuration from the recipe and run inference for the first time.
-set_configuration(ipc_utils.IPCUtils().get_configuration())
+set_configuration(ipc.get_configuration())
 
 # Subscribe to the subsequent configuration changes
-ipc_utils.IPCUtils().get_config_updates()
+ipc.get_config_updates()
 
-# Keeps checking for the updated_config value every one second. If the config changes, it's `True` and
-# inference will be run with the updated config (run_inference) after setting the new config(set_configuration).
-# Toggle it back to `False` and look out for the config updates.
-while True:
-    if config_utils.UPDATED_CONFIG:
-        set_configuration(ipc_utils.IPCUtils().get_configuration())
-        config_utils.UPDATED_CONFIG = False
-    sleep(1)
+Thread(
+    target=wait_for_config_changes,
+    args=(),
+).start()
+
     
 def lambda_handler(event, context):
     return 

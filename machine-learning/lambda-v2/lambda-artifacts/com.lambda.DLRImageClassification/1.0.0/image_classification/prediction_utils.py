@@ -3,7 +3,7 @@
 
 import platform
 from ast import literal_eval
-from datetime import datetime
+from datetime import datetime, timezone
 from io import BytesIO
 from json import dumps
 from sys import modules
@@ -13,7 +13,7 @@ import config_utils
 import IPCUtils as ipc_utils
 from cv2 import VideoCapture, destroyAllWindows, imdecode, imread, resize
 from dlr import DLRModel
-from numpy import argsort, frombuffer, fromstring, load, uint8
+from numpy import argsort, fromstring, load, uint8
 
 config_utils.logger.info("Using dlr from '{}'.".format(modules[DLRModel.__module__].__file__))
 config_utils.logger.info("Using np from '{}'.".format(modules[argsort.__module__].__file__))
@@ -52,7 +52,7 @@ def predict(image_data):
     :param image_data: numpy array of the resized image passed in for inference.
     """
     PAYLOAD = {}
-    PAYLOAD["timestamp"] = str(datetime.now())
+    PAYLOAD["timestamp"] = str(datetime.now(tz=timezone.utc))
     PAYLOAD["inference-type"] = "image-classification"
     PAYLOAD["inference-description"] = "Top {} predictions with score {} or above ".format(
         config_utils.MAX_NO_OF_RESULTS, config_utils.SCORE_THRESHOLD
@@ -114,7 +114,7 @@ def predict_from_cam():
         if ret == False:
             raise RuntimeError("Failed to get frame from the stream")
     if cvimage is not None:
-        return predict_from_image(cvimage)
+        predict_from_image(cvimage)
     else:
         config_utils.logger.error("Unable to capture an image using camera")
         exit(1)

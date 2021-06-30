@@ -27,7 +27,7 @@
   ],
   "componentDependencies": {
       "com.lambda.DLRImageClassification.Model": {
-        "versionRequirement": ">=2.2.0",
+        "versionRequirement": ">=1.0.0",
         "dependencyType": "HARD"
       },
       "com.lambda.DLR": {

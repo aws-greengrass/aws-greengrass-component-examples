@@ -70,7 +70,6 @@ def create_lambda_artifacts(component_arg):
                 if os.path.isdir(file_path):
                     shutil.make_archive(build_file, "zip", file_path)
                     zip_file = "{}.zip".format(build_file)
-                    rel_path = os.path.relpath(zip_file, build_dir_path)
                     create_lambda(zip_file, component)
 
 def create_lambda(zip_file, component):
@@ -78,8 +77,12 @@ def create_lambda(zip_file, component):
     if lambda_role == "":
         print("Please pass in the lambda execution role required to create the inference lambda as '--lambdaRole' or '-l' argument")
         exit(1)
+    with open(
+        zip_file, 'rb'
+    ) as f:
+        code = f.read()
     try:
-        response = lambda_client.create_function(
+        lambda_client.create_function(
             FunctionName=function_name,
             Runtime ='python3.8',
             Role = "arn:aws:iam::{}:role/{}".format(get_account_number(), lambda_role),
@@ -89,13 +92,13 @@ def create_lambda(zip_file, component):
             Publish=True,
             PackageType='Zip',
             Code={
-            'ZipFile': open(zip_file, 'rb').read()
+            'ZipFile': code
             }) 
     except Exception as e:
         print("Cannot create function {} as it already exists. Updating the function code instead.".format(function_name))
-        response = lambda_client.update_function_code(
+        lambda_client.update_function_code(
             FunctionName=function_name,
-            ZipFile=open(zip_file, 'rb').read(),
+            ZipFile=code,
         )
 
 
@@ -347,9 +350,9 @@ inference_models = {
         "DLR-resnet50-armv7l-cpu-ImageClassification.tar.gz",
     ],
     "com.lambda.DLRObjectDetection.Model": [
-        "DLR-yolo3-aarch64-cpu-ImageClassification.tar.gz",
-        "DLR-yolo3-x86_64-cpu-ImageClassification.tar.gz",
-        "DLR-ryolo3-armv7l-cpu-ImageClassification.tar.gz",
+        "DLR-yolo3-aarch64-cpu-ObjectDetection.tar.gz",
+        "DLR-yolo3-x86_64-cpu-ObjectDetection.tar.gz",
+        "DLR-yolo3-armv7l-cpu-ObjectDetection.tar.gz",
     ],
 }
 lambda_client = boto3.client('lambda')
