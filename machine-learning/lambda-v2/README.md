@@ -94,6 +94,7 @@ Follow the steps in order to prepare the component artifacts, recipes and create
         -i or --inferenceType : Type of the inference. Values: ImageClassification / ObjectDetection. Creates both inference and model components of that inference type.
         -c or --componentName : Name of the component to create. This will create only one component at a time.
         -l or --lambdaRole : IAM role attached to the inference lambdas as the lambda execution role.
+        -m or --containerMode : Set to 'true' to create lambda components that run inside container.      
 
         Note: 
         1. inferenceType and componentName args are mutually exclusive. 

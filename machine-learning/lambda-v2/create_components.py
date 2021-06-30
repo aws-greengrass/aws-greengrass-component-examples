@@ -13,13 +13,9 @@ import boto3
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def create_artifacts(component_arg):
+def create_artifacts():
     for component in os.listdir(artifacts_path):
-        if (
-            (component_arg != "" and component_arg != component)
-            or component.startswith(".")
-            or inferenceType not in component
-        ):
+        if skip_creation(component):
             continue
         component_path = os.path.join(artifacts_path, component)
         for version in os.listdir(component_path):
@@ -47,13 +43,9 @@ def create_artifacts(component_arg):
                 download_model(build, inference_models[component])
 
 
-def create_lambda_artifacts(component_arg):
+def create_lambda_artifacts():
     for component in os.listdir(lambda_artifacts_path):
-        if (
-            (component_arg != "" and component_arg != component)
-            or component.startswith(".")
-            or inferenceType not in component
-        ):
+        if skip_lambda_component_creation(component):
             continue
         component_path = os.path.join(lambda_artifacts_path, component)
         for version in os.listdir(component_path):
@@ -61,7 +53,7 @@ def create_lambda_artifacts(component_arg):
                 continue
             version_path = os.path.join(component_path, version)
             component_latest_version = get_latest_version(component, version)
-            build = os.path.join(build_artifacts_path, component, component_latest_version)
+            build = os.path.join(build_lambda_artifacts_path, component, component_latest_version)
             os.makedirs(build, mode=0o777, exist_ok=True)
             for file in os.listdir(version_path):
                 if file.startswith("."):
@@ -75,7 +67,7 @@ def create_lambda_artifacts(component_arg):
 
 
 def create_lambda(zip_file, component):
-    function_name = component.split(".")[2]
+    function_name = component.split(".")[-1]
     if lambda_role == "":
         print(
             "Please pass in the lambda execution role required to create the inference lambda as '--lambdaRole' or '-l' argument"
@@ -117,17 +109,13 @@ def download_model(build, models):
         upload_artifacts(local_artifact, rel_path)
 
 
-def create_recipes(component_arg):
+def create_recipes():
     os.makedirs(build_recipes_path, mode=0o777, exist_ok=True)
     for component_recipe in os.listdir(recipes_path):
         component = component_recipe.split("-")
         c_name = component[0]
         c_version = component[1].split(".json")[0]
-        if (
-            (component_arg != "" and component_arg != c_name)
-            or component_recipe.startswith(".")
-            or inferenceType not in component_recipe
-        ):
+        if skip_creation(c_name):
             continue
         latest_version = get_latest_version(c_name, c_version)
         with open(
@@ -144,24 +132,20 @@ def create_recipes(component_arg):
             f.write(json.dumps(recipe, indent=4))
 
 
-def create_lambda_recipes(component_arg):
+def create_lambda_recipes():
     os.makedirs(build_lambda_recipes_path, mode=0o777, exist_ok=True)
     for component_recipe in os.listdir(lambda_recipes_path):
         component = component_recipe.split("-")
         c_name = component[0]
         c_version = component[1].split(".json")[0]
-        if (
-            (component_arg != "" and component_arg != c_name)
-            or component_recipe.startswith(".")
-            or inferenceType not in component_recipe
-        ):
+        if skip_lambda_component_creation(c_name):
             continue
         latest_version = get_latest_version(c_name, c_version)
         with open(
             os.path.join(lambda_recipes_path, component_recipe),
         ) as f:
             recipe = f.read()
-        function_name = c_name.split(".")[2]
+        function_name = c_name.split(".")[-1]
         response = lambda_client.publish_version(FunctionName=function_name)
         lambda_arn = response["FunctionArn"]
         recipe = recipe.replace("$LAMBDA_ARN$", lambda_arn)
@@ -258,6 +242,7 @@ def create_components():
                     )
                 )
                 exit(1)
+            print("Created component {}".format(component_recipe))
 
 
 def create_lambda_components():
@@ -275,6 +260,7 @@ def create_lambda_components():
                     )
                 )
                 exit(1)
+            print("Created lambda component {}".format(component_recipe))
 
 
 def get_account_number():
@@ -286,6 +272,20 @@ def get_account_number():
     except Exception as e:
         print("Cannot get the account id from the credentials.\nException: {}".format(e))
         exit(1)
+
+
+def skip_creation(component):
+    return (
+        (component_argument != "" and component_argument != component)
+        or component.startswith(".")
+        or inferenceType not in component
+    )
+
+
+def skip_lambda_component_creation(component):
+    return skip_creation(component) or (
+        containerMode.lower() == "true" and ".Container" not in component
+    )
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -304,7 +304,7 @@ shutil.rmtree(build_dir_path, ignore_errors=True, onerror=None)
 region = "us-east-1"
 bucket = "ggv2-example-component-artifacts"
 inferenceType = ""
-componentName = ""
+component_argument = ""
 model_releases = (
     "https://github.com/aws-greengrass/aws-greengrass-component-examples/releases/download/v1.0"
 )
@@ -329,6 +329,12 @@ parser.add_argument(
     default="",
     help="Lambda execution role attached to the inference lambda.",
 )
+parser.add_argument(
+    "--containerMode",
+    "-m",
+    default="",
+    help="Specify whether or not the Lambda function runs in a container",
+)
 group = parser.add_mutually_exclusive_group()
 group.add_argument(
     "--inferenceType",
@@ -339,7 +345,7 @@ group.add_argument(
 group.add_argument(
     "--componentName",
     "-c",
-    default=componentName,
+    default=component_argument,
     help="Name of the component to be created.",
 )
 
@@ -349,7 +355,8 @@ region = args.region
 bucket = "{}-{}".format(args.bucket, region)
 lambda_role = args.lambdaRole
 inferenceType = args.inferenceType
-componentName = args.componentName
+component_argument = args.componentName
+containerMode = args.containerMode
 
 inference_models = {
     "com.lambda.DLRImageClassification.Model": [
@@ -372,9 +379,9 @@ else:
 sts_client = boto3.client("sts")
 
 create_bucket()
-create_artifacts(componentName)
-create_lambda_artifacts(componentName)
-create_recipes(componentName)
-create_lambda_recipes(componentName)
+create_artifacts()
+create_lambda_artifacts()
+create_recipes()
+create_lambda_recipes()
 create_components()
 create_lambda_components()
