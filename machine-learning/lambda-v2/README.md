@@ -89,14 +89,14 @@ Follow the steps in order to prepare the component artifacts, recipes and create
 2. After cloning this github repo, navigate to the `machine-learning/lambda-v2/` folder to run the python script `create_components.py` which takes in the following arguments.
 
 
-        region - Region where you want to create and use the greengrass components (Default: us-east-1).
-        bucket - Name of the bucket which is used to store the component artifacts (Default: ggv2-example-component-artifacts-us-east-1).
-        inferenceType - Type of the inference. Values: ImageClassification / ObjectDetection. Creates both inference and model components of that inference type.
-        componentName - Name of the component to create. This will create only one component at a time.
-        lambdaRole - IAM role attached to the inference lambdas as the lambda execution role.
+        -r or --region : Region where you want to create and use the greengrass components (Default: us-east-1).
+        -b or --bucket : Name of the bucket which is used to store the component artifacts (Default: ggv2-example-component-artifacts-us-east-1).
+        -i or --inferenceType : Type of the inference. Values: ImageClassification / ObjectDetection. Creates both inference and model components of that inference type.
+        -c or --componentName : Name of the component to create. This will create only one component at a time.
+        -l or --lambdaRole : IAM role attached to the inference lambdas as the lambda execution role.
 
         Note: 
-        1. InferenceType and componentName args are mutually exclusive. 
+        1. inferenceType and componentName args are mutually exclusive. 
         2. Creation of lambda components require '--lambdaRole' or '-l' argument. 
        
 
