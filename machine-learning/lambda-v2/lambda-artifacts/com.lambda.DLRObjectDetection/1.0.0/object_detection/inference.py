@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from os import makedirs, path
-from threading import Timer, Thread
-from time import sleep
+from threading import Thread, Timer
 
 import config_utils
 import IPCUtils as ipc_utils
@@ -95,11 +94,13 @@ def run_inference(new_config, config_changed):
     )
     config_utils.SCHEDULED_THREAD.start()
 
+
 def wait_for_config_changes():
     with config_utils.condition:
         config_utils.condition.wait()
         set_configuration(ipc.get_configuration())
     wait_for_config_changes()
+
 
 ipc = ipc_utils.IPCUtils()
 
@@ -114,6 +115,6 @@ Thread(
     args=(),
 ).start()
 
-    
+
 def lambda_handler(event, context):
-    return 
+    return

@@ -30,13 +30,7 @@ from cv2 import (
     resize,
 )
 from dlr import DLRModel
-from numpy import (
-    argsort,
-    expand_dims,
-    fromstring,
-    load,
-    uint8,
-)
+from numpy import argsort, expand_dims, fromstring, load, uint8
 
 config_utils.logger.info("Using dlr from '{}'.".format(modules[DLRModel.__module__].__file__))
 config_utils.logger.info("Using np from '{}'.".format(modules[argsort.__module__].__file__))

@@ -1,11 +1,11 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-from logging import INFO, StreamHandler, getLogger
+from logging import getLogger
 from os import environ, path
-from sys import stdout
-from threading import Condition
 from pathlib import Path
+from threading import Condition
+
 from awsiot.greengrasscoreipc.model import QOS
 
 # Set all the constants
@@ -32,6 +32,6 @@ logger = getLogger()
 MODEL_DIR = path.expandvars(path.join(environ["PWD"], environ.get("DLR_IC_MODEL_DIR")))
 artifacts_path = Path(__file__).parent.absolute()
 IMAGE_DIR = path.join(artifacts_path, "sample_images")
-LABELS =  path.expandvars(environ.get("DLR_IC_LABELS"))
+LABELS = path.expandvars(environ.get("DLR_IC_LABELS"))
 
 condition = Condition()

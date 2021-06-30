@@ -46,6 +46,7 @@ def create_artifacts(component_arg):
             if ".Model" in component:
                 download_model(build, inference_models[component])
 
+
 def create_lambda_artifacts(component_arg):
     for component in os.listdir(lambda_artifacts_path):
         if (
@@ -72,30 +73,34 @@ def create_lambda_artifacts(component_arg):
                     zip_file = "{}.zip".format(build_file)
                     create_lambda(zip_file, component)
 
+
 def create_lambda(zip_file, component):
     function_name = component.split(".")[2]
     if lambda_role == "":
-        print("Please pass in the lambda execution role required to create the inference lambda as '--lambdaRole' or '-l' argument")
+        print(
+            "Please pass in the lambda execution role required to create the inference lambda as '--lambdaRole' or '-l' argument"
+        )
         exit(1)
-    with open(
-        zip_file, 'rb'
-    ) as f:
+    with open(zip_file, "rb") as f:
         code = f.read()
     try:
         lambda_client.create_function(
             FunctionName=function_name,
-            Runtime ='python3.8',
-            Role = "arn:aws:iam::{}:role/{}".format(get_account_number(), lambda_role),
+            Runtime="python3.8",
+            Role="arn:aws:iam::{}:role/{}".format(get_account_number(), lambda_role),
             Handler="inference.lambda_handler",
             Timeout=123,
             MemorySize=128,
             Publish=True,
-            PackageType='Zip',
-            Code={
-            'ZipFile': code
-            }) 
+            PackageType="Zip",
+            Code={"ZipFile": code},
+        )
     except Exception as e:
-        print("Cannot create function {} as it already exists. Updating the function code instead.".format(function_name))
+        print(
+            "Cannot create function {} as it already exists. Updating the function code instead.".format(
+                function_name
+            )
+        )
         lambda_client.update_function_code(
             FunctionName=function_name,
             ZipFile=code,
@@ -138,6 +143,7 @@ def create_recipes(component_arg):
         with open(os.path.join(build_recipes_path, recipe_file_name), "w") as f:
             f.write(json.dumps(recipe, indent=4))
 
+
 def create_lambda_recipes(component_arg):
     os.makedirs(build_lambda_recipes_path, mode=0o777, exist_ok=True)
     for component_recipe in os.listdir(lambda_recipes_path):
@@ -157,7 +163,7 @@ def create_lambda_recipes(component_arg):
             recipe = f.read()
         function_name = c_name.split(".")[2]
         response = lambda_client.publish_version(FunctionName=function_name)
-        lambda_arn = response['FunctionArn']
+        lambda_arn = response["FunctionArn"]
         recipe = recipe.replace("$LAMBDA_ARN$", lambda_arn)
         recipe = recipe.replace("$COMPONENT_VERSION$", latest_version)
         recipe = json.loads(recipe)
@@ -253,6 +259,7 @@ def create_components():
                 )
                 exit(1)
 
+
 def create_lambda_components():
     for component_recipe in os.listdir(build_lambda_recipes_path):
         recipe_file_path = os.path.join(build_lambda_recipes_path, component_recipe)
@@ -268,6 +275,7 @@ def create_lambda_components():
                     )
                 )
                 exit(1)
+
 
 def get_account_number():
     try:
@@ -355,7 +363,7 @@ inference_models = {
         "DLR-yolo3-armv7l-cpu-ObjectDetection.tar.gz",
     ],
 }
-lambda_client = boto3.client('lambda')
+lambda_client = boto3.client("lambda")
 greengrass_client = boto3.client("greengrassv2", region_name=region)
 if region is None or region == "us-east-1":
     s3_client = boto3.client("s3", region_name=region)

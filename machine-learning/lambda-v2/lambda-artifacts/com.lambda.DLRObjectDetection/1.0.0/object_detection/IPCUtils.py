@@ -71,7 +71,9 @@ class IPCUtils:
             exit(1)
 
 
-class ConfigUpdateHandler(awsiot.greengrasscoreipc.client.SubscribeToConfigurationUpdateStreamHandler):
+class ConfigUpdateHandler(
+    awsiot.greengrasscoreipc.client.SubscribeToConfigurationUpdateStreamHandler
+):
     r"""
     Custom handle of the subscribed configuration events(steam,error and close).
     Due to the SDK limitation, another request from within this callback cannot to be sent.

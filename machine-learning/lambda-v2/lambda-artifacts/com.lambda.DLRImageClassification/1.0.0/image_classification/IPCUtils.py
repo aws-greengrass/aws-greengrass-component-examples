@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from json import dumps
+
 import awsiot.greengrasscoreipc
 import config_utils
 from awsiot.greengrasscoreipc.model import (
@@ -70,7 +71,9 @@ class IPCUtils:
             exit(1)
 
 
-class ConfigUpdateHandler(awsiot.greengrasscoreipc.client.SubscribeToConfigurationUpdateStreamHandler):
+class ConfigUpdateHandler(
+    awsiot.greengrasscoreipc.client.SubscribeToConfigurationUpdateStreamHandler
+):
     r"""
     Custom handle of the subscribed configuration events(steam,error and close).
     Due to the SDK limitation, another request from within this callback cannot to be sent.
@@ -81,6 +84,7 @@ class ConfigUpdateHandler(awsiot.greengrasscoreipc.client.SubscribeToConfigurati
         config_utils.logger.info(event.configuration_update_event)
         with config_utils.condition:
             config_utils.condition.notify()
+
     def on_stream_error(self, error: Exception) -> bool:
         config_utils.logger.error("Error in config update subscriber - {0}".format(error))
         return False
