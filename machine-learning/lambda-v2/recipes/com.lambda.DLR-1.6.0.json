@@ -1,0 +1,31 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.lambda.DLR",
+    "ComponentVersion": "1.6.0",
+    "ComponentDescription": "DLR is a compact, common runtime for deep learning models and decision tree models compiled by SageMaker Neo, TVM, or Treelite.",
+    "ComponentPublisher": "AWS",
+    "Manifests": [
+      {
+        "Platform": {
+          "os": "linux",
+          "architecture": "all"
+        },
+        "Lifecycle": {
+          "install": {
+            "script": "bash {artifacts:decompressedPath}/installer/installer.sh",
+            "timeout": "900"
+          }
+        },
+        "Artifacts": [
+          {
+            "Uri": "s3://$BUCKETNAME$/artifacts/com.lambda.DLR/$COMPONENT_VERSION$/installer.zip",
+            "Unarchive": "ZIP",
+            "Permission": {
+              "Read": "OWNER",
+              "Execute": "NONE"
+            }
+          }
+        ]
+      }
+    ]
+  }
