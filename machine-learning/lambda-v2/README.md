@@ -86,34 +86,35 @@ Follow the steps in order to prepare the component artifacts, recipes and create
     export AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXXXXXXX
     export AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     ```
-2. After cloning this github repo, navigate to the `machine-learning/lambda-v2/` folder to run the python script `create_components.py` which takes in the following arguments.
+2. After cloning this github repo, navigate to the `machine-learning/lambda-v2/` folder to run the python script `create_components.py` which takes in the following arguments
 
 
         -r or --region : Region where you want to create and use the greengrass components (Default: us-east-1).
-        -b or --bucket : Name of the bucket which is used to store the component artifacts (Default: ggv2-example-component-artifacts-us-east-1).
+        -b or --bucket : (Required) Name of the bucket which is used to store the component artifacts.
         -i or --inferenceType : Type of the inference. Values: ImageClassification / ObjectDetection. Creates both inference and model components of that inference type.
         -c or --componentName : Name of the component to create. This will create only one component at a time.
         -l or --lambdaRole : IAM role attached to the inference lambdas as the lambda execution role.
         -m or --containerMode : Set to 'true' to create lambda components that run inside container.      
 
         Note: 
-        1. inferenceType and componentName args are mutually exclusive. 
-        2. Creation of lambda components require '--lambdaRole' or '-l' argument. 
+        1. Bucket name is mandatory. 
+        2. inferenceType and componentName args are mutually exclusive. 
+        3. Creation of lambda components require '--lambdaRole' or '-l' argument and the role needs to have trusted entity AWS Service: lambda. 
        
 
     Run the following commands in order to create runtime, model and inference lambda components to perform ImageClassification
 
-    -  Create the runtime component 
+    1.  Create the runtime component 
 
-        `python3 create_components.py -c com.lambda.DLR` 
+        `python3 create_components.py -c com.lambda.DLR -b bucketName`
 
-    -  Create the model component (ImageClassification)
+    2.  Create the model component (ImageClassification)
 
-        `python3 create_components.py -c com.lambda.DLRImageClassification.Model` 
+        `python3 create_components.py -c com.lambda.DLRImageClassification.Model -b bucketName` 
 
-    -  Create the lambda inference component (ImageClassification)
+    3.  Create the lambda inference component (ImageClassification)
 
-        `python3 create_components.py -c com.lambda.DLRImageClassification -l <lambda-execution-role>` 
+        `python3 create_components.py -c com.lambda.DLRImageClassification -l <lambda-execution-role> -b bucketName` 
 
 
     - This script creates a build folder with the prepared artifacts and upload them to the s3 bucket. The sample models are downloaded from the releases section based on the parameters inference type. This might take several minutes as the artifacts are prepared and uploaded to the desired S3 bucket. 

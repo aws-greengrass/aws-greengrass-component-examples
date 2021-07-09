@@ -79,7 +79,7 @@ def create_lambda(zip_file, component):
         lambda_client.create_function(
             FunctionName=function_name,
             Runtime="python3.8",
-            Role="arn:aws:iam::{}:role/{}".format(get_account_number(), lambda_role),
+            Role="arn:aws:iam::{}:role/{}".format(account, lambda_role),
             Handler="inference.lambda_handler",
             Timeout=123,
             MemorySize=128,
@@ -158,7 +158,6 @@ def create_lambda_recipes():
 
 def get_latest_version(c_name, c_version):
     try:
-        account = get_account_number()
         print(
             "Fetching the component {} from the account: {}, region: {}".format(
                 c_name, account, region
@@ -302,7 +301,6 @@ build_lambda_recipes_path = os.path.join(build_dir_path, "lambda-recipes")
 shutil.rmtree(build_dir_path, ignore_errors=True, onerror=None)
 
 region = "us-east-1"
-bucket = "ggv2-example-component-artifacts"
 inferenceType = ""
 component_argument = ""
 model_releases = (
@@ -316,12 +314,6 @@ parser.add_argument(
     "-r",
     default=region,
     help="Greengrass components will be created in the region.",
-)
-parser.add_argument(
-    "--bucket",
-    "-b",
-    default=bucket,
-    help="S3 bucket used to store the component artifacts.",
 )
 parser.add_argument(
     "--lambdaRole",
@@ -348,11 +340,18 @@ group.add_argument(
     default=component_argument,
     help="Name of the component to be created.",
 )
+requiredArgs = parser.add_argument_group('Required arguments')
+requiredArgs.add_argument(
+    "--bucket",
+    "-b",
+    required=True,
+    help="S3 bucket used to store the component artifacts.",
+)
 
 args = parser.parse_args()
 
 region = args.region
-bucket = "{}-{}".format(args.bucket, region)
+bucket = args.bucket
 lambda_role = args.lambdaRole
 inferenceType = args.inferenceType
 component_argument = args.componentName
@@ -370,13 +369,14 @@ inference_models = {
         "DLR-yolo3-armv7l-cpu-ObjectDetection.tar.gz",
     ],
 }
-lambda_client = boto3.client("lambda")
+lambda_client = boto3.client("lambda", region_name=region)
 greengrass_client = boto3.client("greengrassv2", region_name=region)
 if region is None or region == "us-east-1":
     s3_client = boto3.client("s3", region_name=region)
 else:
     s3_client = boto3.client("s3")
 sts_client = boto3.client("sts")
+account = get_account_number()
 
 create_bucket()
 create_artifacts()
