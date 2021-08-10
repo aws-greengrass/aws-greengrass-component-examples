@@ -6,6 +6,27 @@
 
 set -eux
 
+while getopts ":i:" opt; do
+  case ${opt} in
+    i )
+      use_installer=$OPTARG
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      exit;;
+    : )
+      echo "Invalid option: $OPTARG requires an argument" 1>&2
+      exit;;
+  esac
+done
+
+if [ "$use_installer" = true ]; then
+  echo "Running DLR install script...";
+else
+  echo "Skipping installation of component dependencies.";
+  exit 0;
+fi
+
 kernel=$(uname -s)
 dlr_version="1.6.0"
 min_py_version="3.0.0"
