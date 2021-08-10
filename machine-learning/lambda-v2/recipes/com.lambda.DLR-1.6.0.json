@@ -4,6 +4,11 @@
     "ComponentVersion": "1.6.0",
     "ComponentDescription": "DLR is a compact, common runtime for deep learning models and decision tree models compiled by SageMaker Neo, TVM, or Treelite.",
     "ComponentPublisher": "AWS",
+    "ComponentConfiguration": {
+      "DefaultConfiguration": {
+        "UseInstaller": true
+      }
+    },
     "Manifests": [
       {
         "Platform": {
@@ -12,7 +17,7 @@
         },
         "Lifecycle": {
           "install": {
-            "script": "bash {artifacts:decompressedPath}/installer/installer.sh",
+            "script": "sh {artifacts:decompressedPath}/installer/installer.sh -i {configuration:/UseInstaller}",
             "timeout": "900"
           }
         },

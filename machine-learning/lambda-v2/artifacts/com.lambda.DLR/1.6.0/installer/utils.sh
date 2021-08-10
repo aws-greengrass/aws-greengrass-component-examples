@@ -32,6 +32,7 @@ get_awsiotsdk_command=$(
     cat <<END
 try:
     import awsiot
+    print(awsiot.__version__)
 except Exception as e:
     print(e)
 END
@@ -54,7 +55,7 @@ version() {
 }
 
 check_dlr() {
-    disable_metric_collection_command
+    python3 -c "$disable_metric_collection_command"
     get_dlr_version=$(python3 -c "$get_dlr_version_command")
     if [[ "$get_dlr_version" == "$dlr_version" ]]; then
         return 0
