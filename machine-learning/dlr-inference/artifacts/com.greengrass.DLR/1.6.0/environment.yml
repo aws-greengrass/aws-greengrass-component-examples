@@ -1,0 +1,6 @@
+name: greengrass_ml_dlr_windows
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - opencv

@@ -1,0 +1,28 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.greengrass.DLRImageClassification.Model",
+    "ComponentVersion": "2.5.0",
+    "ComponentDescription": "Downloads the resnet50_v1 image classification ML models to the device as artifacts.",
+    "ComponentPublisher": "Amazon",
+    "ComponentConfiguration": {
+      "DefaultConfiguration": {
+      }
+    },
+    "Manifests": [
+      {
+        "Platform": {
+          "os": "windows"
+        },
+        "Artifacts": [
+	  {
+            "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.DLRImageClassification.Model/$COMPONENT_VERSION$/DLR-resnet50-win-cpu-ImageClassification.zip",
+            "Unarchive": "Zip",
+            "Permission": {
+              "Read": "ALL",
+              "Execute": "ALL"
+          }
+          }
+        ]
+      }
+    ]
+}

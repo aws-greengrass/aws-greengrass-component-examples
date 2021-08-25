@@ -1,0 +1,38 @@
+{
+  "RecipeFormatVersion": "2020-01-25",
+  "ComponentName": "com.greengrass.DLR",
+  "ComponentVersion": "1.6.0",
+  "ComponentDescription": "My first AWS IoT Greengrass component.",
+  "ComponentPublisher": "Amazon",
+  "ComponentConfiguration": {
+    "DefaultConfiguration": {
+      "MLRootPath": "%cd%\\..\\com.greengrass.DLR\\miniconda"
+    }
+  },
+  "Manifests": [
+    {
+      "Platform": {
+        "os": "windows"
+      },
+      "Lifecycle": {
+        "Install": "{artifacts:path}/installer.bat {artifacts:path}/environment.yml {configuration:/MLRootPath}"
+      },
+      "Artifacts": [
+        {
+          "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.DLR/$COMPONENT_VERSION$/installer.bat",
+          "Permission": {
+            "Read": "OWNER",
+            "Execute": "NONE"
+          }
+        },
+        {
+          "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.DLR/$COMPONENT_VERSION$/environment.yml",
+          "Permission": {
+            "Read": "OWNER",
+            "Execute": "NONE"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.greengrass.DLRImageClassification",
+    "ComponentVersion": "2.5.0",
+    "ComponentType": "aws.greengrass.generic",
+    "ComponentDescription": "Sample recipe - Image classification inference using TFlite runtime and mobilenet quantized model.",
+    "ComponentPublisher": "AWS",
+    "ComponentConfiguration": {
+      "DefaultConfiguration": {
+        "accessControl": {
+          "aws.greengrass.ipc.mqttproxy": {
+            "com.greengrass.DLRImageClassification:mqttproxy:1": {
+              "policyDescription": "Allows access to publish via topic ml/tflite/image-classification.",
+              "operations": [
+                "aws.greengrass#PublishToIoTCore"
+              ],
+              "resources": [
+                "ml/dlr/image-classification"
+              ]
+            }
+          }
+        },
+        "ImageName": "cat.jpeg",
+        "InferenceInterval": "3600",
+        "PublishResultsOnTopic": "ml/dlr/image-classification"
+      }
+    },
+    "ComponentDependencies": {
+      "com.greengrass.DLR": {
+        "VersionRequirement": ">=1.6.0",
+        "DependencyType": "HARD"
+      },
+      "com.greengrass.DLRImageClassification.Model": {
+        "VersionRequirement": ">=2.5.0",
+        "DependencyType": "HARD"
+      }
+    },
+    "Manifests": [
+      {
+        "Platform": {
+          "os": "windows"
+        },
+        "Lifecycle": {
+          "setEnv": {
+            "DEFAULT_DLR_IC_IMAGE_DIR": "{artifacts:decompressedPath}/image_classification/sample_images/",
+            "DLR_IC_MODEL_DIR": "{com.greengrass.DLRImageClassification.Model:artifacts:decompressedPath}\\DLR-resnet50-win-cpu-ImageClassification.zip"
+          },
+          "Run": "{com.greengrass.DLR:configuration:/MLRootPath}\\Library\\bin\\conda activate {com.greengrass.DLR:configuration:/MLRootPath}\\envs\\greengrass_ml_dlr_windows & python -u {artifacts:decompressedPath}/image_classification/inference.py"
+        },
+        "Artifacts": [
+            {
+              "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.DLRImageClassification/$COMPONENT_VERSION$/image_classification.zip",
+              "Unarchive": "ZIP",
+              "Permission": {
+                  "Read": "OWNER",
+                  "Execute": "NONE"
+              }
+          }
+        ]
+      }
+    ]
+  }
