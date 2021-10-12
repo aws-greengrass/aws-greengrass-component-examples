@@ -1,0 +1,30 @@
+{
+  "RecipeFormatVersion": "2020-01-25",
+  "ComponentName": "com.greengrass.DLRObjectDetection.Model",
+  "ComponentVersion": "2.5.0",
+  "ComponentType": "aws.greengrass.generic",
+  "ComponentDescription": "Downloads the yolo3_darknet53 object detection ML models to the device as artifacts.",
+  "ComponentPublisher": "Amazon",
+  "ComponentConfiguration": {
+    "DefaultConfiguration": {}
+  },
+  "Manifests": [
+    {
+      "Platform": {
+        "os": "windows"
+      },
+      "Lifecycle": {},
+      "Artifacts": [
+        {
+          "Uri": "s3://$BUCKETNAME$/artifacts/com.greengrass.DLRObjectDetection.Model/$COMPONENT_VERSION$/DLR-yolo3-win-cpu-ObjectDetection.zip",
+          "Unarchive": "ZIP",
+          "Permission": {
+            "Read": "ALL",
+            "Execute": "ALL"
+          }
+        }
+      ]
+    }
+  ],
+  "Lifecycle": {}
+}

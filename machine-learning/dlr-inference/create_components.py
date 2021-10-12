@@ -7,6 +7,7 @@ import os
 import shutil
 import ssl
 import urllib.request
+import pathlib
 
 import boto3
 
@@ -38,11 +39,11 @@ def create_artifacts(component_arg):
                     shutil.make_archive(build_file, "zip", file_path)
                     zip_file = "{}.zip".format(build_file)
                     rel_path = os.path.relpath(zip_file, build_dir_path)
-                    upload_artifacts(zip_file, rel_path)
+                    upload_artifacts(zip_file, pathlib.PurePath(rel_path).as_posix())
                 elif os.path.isfile(file_path):
                     rel_path = os.path.relpath(build_file, build_dir_path)
                     shutil.copy(file_path, build_file)
-                    upload_artifacts(build_file, rel_path)
+                    upload_artifacts(build_file, pathlib.PurePath(rel_path).as_posix())
             if ".Model" in component:
                 download_model(build, inference_models[component])
 
@@ -50,10 +51,10 @@ def create_artifacts(component_arg):
 def download_model(build, models):
     for model in models:
         model_url = "{}/{}".format(model_releases, model)
-        local_artifact = "{}/{}".format(build, model)
+        local_artifact = os.path.join(build, model)
         urllib.request.urlretrieve(model_url, local_artifact)
         rel_path = os.path.relpath(local_artifact, build_dir_path)
-        upload_artifacts(local_artifact, rel_path)
+        upload_artifacts(local_artifact, pathlib.PurePath(rel_path).as_posix())
 
 
 def create_recipes(component_arg):
@@ -238,7 +239,7 @@ inference_models = {
         "DLR-resnet50-win-cpu-ImageClassification.zip"
     ],
     "com.greengrass.DLRObjectDetection.Model": [
-       "DLR-resnet50-win-cpu-ObjectDetection.zip"
+       "DLR-yolo3-win-cpu-ObjectDetection.zip"
     ],
 }
 

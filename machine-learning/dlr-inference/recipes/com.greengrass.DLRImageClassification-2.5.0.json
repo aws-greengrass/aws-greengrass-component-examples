@@ -3,14 +3,14 @@
     "ComponentName": "com.greengrass.DLRImageClassification",
     "ComponentVersion": "2.5.0",
     "ComponentType": "aws.greengrass.generic",
-    "ComponentDescription": "Sample recipe - Image classification inference using TFlite runtime and mobilenet quantized model.",
+    "ComponentDescription": "Sample recipe - Image classification inference using DLR and resnet50_v1 model.",
     "ComponentPublisher": "AWS",
     "ComponentConfiguration": {
       "DefaultConfiguration": {
         "accessControl": {
           "aws.greengrass.ipc.mqttproxy": {
             "com.greengrass.DLRImageClassification:mqttproxy:1": {
-              "policyDescription": "Allows access to publish via topic ml/tflite/image-classification.",
+              "policyDescription": "Allows access to publish via topic ml/dlr/image-classification.",
               "operations": [
                 "aws.greengrass#PublishToIoTCore"
               ],
@@ -43,7 +43,7 @@
         "Lifecycle": {
           "setEnv": {
             "DEFAULT_DLR_IC_IMAGE_DIR": "{artifacts:decompressedPath}/image_classification/sample_images/",
-            "DLR_IC_MODEL_DIR": "{com.greengrass.DLRImageClassification.Model:artifacts:decompressedPath}\\DLR-resnet50-win-cpu-ImageClassification.zip"
+            "DLR_IC_MODEL_DIR": "{com.greengrass.DLRImageClassification.Model:artifacts:decompressedPath}\\DLR-resnet50-win-cpu-ImageClassification"
           },
           "Run": "{com.greengrass.DLR:configuration:/MLRootPath}\\Library\\bin\\conda activate {com.greengrass.DLR:configuration:/MLRootPath}\\envs\\greengrass_ml_dlr_windows & python -u {artifacts:decompressedPath}/image_classification/inference.py"
         },
