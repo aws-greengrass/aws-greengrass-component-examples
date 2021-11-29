@@ -30,7 +30,7 @@
             "DependencyType": "HARD"
         },
         "aws.greengrass.SageMakerEdgeManager": {
-            "VersionRequirement": ">=1.0.0 <1.1.0",
+            "VersionRequirement": ">=1.0.0",
             "DependencyType": "HARD"
         }
     },

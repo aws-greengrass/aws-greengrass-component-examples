@@ -192,7 +192,6 @@ build_recipes_path = os.path.join(build_dir_path, "recipes")
 shutil.rmtree(build_dir_path, ignore_errors=True, onerror=None)
 
 region = "us-east-1"
-bucket = "ggv2-example-component-artifacts"
 inferenceType = ""
 componentName = ""
 model_releases = (
@@ -207,11 +206,12 @@ parser.add_argument(
     default=region,
     help="Greengrass components will be created in the region.",
 )
-parser.add_argument(
+requiredArgs = parser.add_argument_group("Required arguments")
+requiredArgs.add_argument(
     "--bucket",
     "-b",
-    default=bucket,
-    help="This bucket will be used to store the component artifacts.",
+    required=True,
+    help="S3 bucket used to store the component artifacts.",
 )
 group = parser.add_mutually_exclusive_group()
 group.add_argument(
@@ -230,7 +230,7 @@ group.add_argument(
 args = parser.parse_args()
 
 region = args.region
-bucket = "{}-{}".format(args.bucket, region)
+bucket = args.bucket
 inferenceType = args.inferenceType
 componentName = args.componentName
 
