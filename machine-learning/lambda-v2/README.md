@@ -2,13 +2,19 @@
 
 These example components are used to run sample image classification and object detection inferences with AWS lambda.
 
+
 Image Classification 
- - com.lambda.DLRImageClassification 
+ - com.lambda.DLRImageClassification(No container  mode)
+ - com.lambda.Container.DLRImageClassification(Greengrass container mode)
  - com.lambda.DLRImageClassification.Model
 
 Object Detection
- - com.lambda.DLRObjectDetection
+ - com.lambda.DLRObjectDetection(No container  mode)
+ - com.lambda.Container.DLRObjectDetection(Greengrass container mode)
  - com.lambda.DLRObjectDetection.Model
+
+Runtime component 
+- com.lambda.DLR 
 
 ### Sample models   
 
@@ -33,6 +39,8 @@ These sample components provide the following configuration parameters that can 
 The following configuration is applicable for both the `com.lambda.DLRImageClassification` and 
 `com.lambda.DLRObjectDetection` inference components. 
 
+Since these inference components are lambda components, we can set the following configuration values only during the deployment. More info on setting configuration during deployment can be found [here](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html)
+
 - **accessControl** (Optional) : The object that contains the authorization policy that allows the component to publish messages to the default notifications topic.
 
     Default:
@@ -54,7 +62,7 @@ The following configuration is applicable for both the `com.lambda.DLRImageClass
 
 - **PublishResultsOnTopic** (Optional) : The topic on which you want to publish the inference results. If you modify this value, then you must also modify the value of resources in the accessControl parameter to match your custom topic name.
 
-    Default: `gg/sageMakerEdgeManager/<inference-type>`
+    Default: `""`
 
 - **ImageDirectory** (Optional) : The path of the folder on the device where inference components read images. You can modify this value to any location on your device to which you have read/write access.
 
@@ -127,4 +135,4 @@ Follow the steps in order to prepare the component artifacts, recipes and create
 
 ## Deploy components
 
-Follow the [documentation](https://docs.aws.amazon.com/greengrass/v2/developerguide/get-started-with-edge-manager-on-greengrass.html#run-sample-sme-image-classification-inference) to deploy inference and model components and run inference on the edge using sagemaker edge manager. 
+Follow the [documentation]() to deploy inference and model components and run inference on the edge using lambdas in Greengrassv2. 
