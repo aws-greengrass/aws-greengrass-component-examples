@@ -1,16 +1,16 @@
-# Inference applications using AWS lambda as a greengrassv2 component. 
+# Inference applications that run AWS Lambda functions in a Greengrass V2 component 
 
 These example components are used to run sample image classification and object detection inferences with AWS lambda.
 
 
 Image Classification 
- - com.lambda.DLRImageClassification(No container  mode)
- - com.lambda.Container.DLRImageClassification(Greengrass container mode)
+ - com.lambda.DLRImageClassification (No container mode)
+ - com.lambda.Container.DLRImageClassification (Greengrass container mode)
  - com.lambda.DLRImageClassification.Model
 
 Object Detection
- - com.lambda.DLRObjectDetection(No container  mode)
- - com.lambda.Container.DLRObjectDetection(Greengrass container mode)
+ - com.lambda.DLRObjectDetection (No container mode)
+ - com.lambda.Container.DLRObjectDetection (Greengrass container mode)
  - com.lambda.DLRObjectDetection.Model
 
 Runtime component 
@@ -39,11 +39,11 @@ These sample components provide the following configuration parameters that can 
 The following configuration is applicable for both the `com.lambda.DLRImageClassification` and 
 `com.lambda.DLRObjectDetection` inference components. 
 
-Since these inference components are lambda components, we can set the following configuration values only during the deployment. More info on setting configuration during deployment can be found [here](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html)
+The com.lambda.DLRImageClassification and com.lambda.DLRObjectDetection inference components require the following configuration parameters. You specify these configuration values when you deploy the components. Because these component are Lambda function components, you can't set default configuration values in the component recipe. For more information, see [Update component configurations](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html).
 
-- **accessControl** (Optional) : The object that contains the authorization policy that allows the component to publish messages to the default notifications topic.
+- **accessControl** (Optional) : The authorization policy that allows the component to publish MQTT messages to AWS IoT Core on the default notifications topic.
 
-    Default:
+    Example:
     ```
     "accessControl": {
         "aws.greengrass.ipc.mqttproxy": {
@@ -60,13 +60,13 @@ Since these inference components are lambda components, we can set the following
     },
     ```
 
-- **PublishResultsOnTopic** (Optional) : The topic on which you want to publish the inference results. If you modify this value, then you must also modify the value of resources in the accessControl parameter to match your custom topic name.
+- **PublishResultsOnTopic** (Optional) : The MQTT topic where this component publishes inference results. When you modify this value, you must also update the resource value in the `accessControl` parameter to allow this component to publish on this topic.
 
-    Default: `""`
+    Example: `lambda/dlr/<inference-type>`
 
-- **ImageDirectory** (Optional) : The path of the folder on the device where inference components read images. You can modify this value to any location on your device to which you have read/write access.
+- **ImageDirectory** (Optional) : The path of the folder on the device where this component reads images. The system user that runs these ML inference components must have read/write access to the folder that you specify.
 
-    Default: `/greengrass/v2/packages/artifacts-unarchived/<component-name>/<inference-type>/sample_images`
+    Default: `<greengrass-root>/packages/artifacts-unarchived/<component-name>/<inference-type>/sample_images`
     
 - **ImageName** (Optional) : The name of the image that the inference component uses as an input to a make prediction. The component looks for the image in the folder specified in ImageDirectory. By default, the component uses the sample image in the default image directory. AWS IoT Greengrass supports the following image formats: jpeg, jpg, png, and npy.
 
@@ -82,7 +82,7 @@ The following configuration is applicable for both the `com.lambda.DLRObjectDete
 
 - **ModelPath** (Optional) : The path of the folder where the packaged model artifacts are unarchived. 
 
-    Default: `/greengrass/v2/work/<component-name>/`
+    Default: `<greengrass-root>/work/<component-name>/`
 
 
 ## Create components
@@ -94,10 +94,10 @@ Follow the steps in order to prepare the component artifacts, recipes and create
     export AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXXXXXXX
     export AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     ```
-2. After cloning this github repo, navigate to the `machine-learning/lambda-v2/` folder to run the python script `create_components.py` which takes in the following arguments
+2. After cloning this GitHub repo, navigate to the `machine-learning/lambda-v2/` folder to run the python script `create_components.py` which takes in the following arguments
 
 
-        -r or --region : Region where you want to create and use the greengrass components (Default: us-east-1).
+        -r or --region : Region where you want to create and use the greengrass components (Example: us-east-1).
         -b or --bucket : (Required) Name of the bucket which is used to store the component artifacts.
         -i or --inferenceType : Type of the inference. Values: ImageClassification / ObjectDetection. Creates both inference and model components of that inference type.
         -c or --componentName : Name of the component to create. This will create only one component at a time.
@@ -131,8 +131,5 @@ Follow the steps in order to prepare the component artifacts, recipes and create
 
     - Recipe files are updated with the latest patch version of the component(if the component exists already). Artifact URIs in the recipes are also updated based on the region and bucket parameters.
 
-    - New versions of all the five components are created using the uploaded artifacts and updated recipes. You can find these under My components in your AWS IoT Greengrass console.
+    - New versions of all the five components are created using the uploaded artifacts and updated recipes. You can find these under <b>My components</b> in the AWS IoT Greengrass console.
 
-## Deploy components
-
-Follow the [documentation]() to deploy inference and model components and run inference on the edge using lambdas in Greengrassv2. 
