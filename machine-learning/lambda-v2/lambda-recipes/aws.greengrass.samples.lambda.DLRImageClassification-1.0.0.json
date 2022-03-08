@@ -1,6 +1,6 @@
 {
   "lambdaArn": "$LAMBDA_ARN$",
-  "componentName": "com.lambda.Container.DLRObjectDetection",
+  "componentName": "aws.greengrass.samples.lambda.DLRImageClassification",
   "componentVersion": "$COMPONENT_VERSION$",
   "componentPlatforms": [
     {
@@ -26,11 +26,11 @@
       }
   ],
   "componentDependencies": {
-      "com.lambda.DLRObjectDetection.Model": {
-        "versionRequirement": "1.0.0",
+      "aws.greengrass.samples.lambda.DLRImageClassification.Model": {
+        "versionRequirement": ">=1.0.0",
         "dependencyType": "HARD"
       },
-      "com.lambda.DLR": {
+      "aws.greengrass.samples.lambda.DLR": {
         "versionRequirement": ">=1.6.0",
         "dependencyType": "HARD"
       }
@@ -38,16 +38,11 @@
   },
   "componentLambdaParameters": {
     "linuxProcessParams": {
-      "containerParams": {
-        "memorySizeInKB": 1024000,
-        "mountROSysfs": false,
-        "volumes": [],
-        "devices": []
-      }
+        "isolationMode": "NoContainer"
     },
     "environmentVariables": {
-        "DLR_OD_MODEL_DIR": "{com.lambda.DLRObjectDetection.Model:configuration:/ModelPath}",
-        "DLR_OD_LABELS": "{com.lambda.DLRObjectDetection.Model:artifacts:path}/labels.txt"
+        "DLR_IC_MODEL_DIR": "{aws.greengrass.samples.lambda.DLRImageClassification.Model:configuration:/ModelPath}",
+        "DLR_IC_LABELS": "{aws.greengrass.samples.lambda.DLRImageClassification.Model:artifacts:path}/labels.txt"
     },
     "inputPayloadEncodingType": "json",
     "pinned": true,
@@ -57,4 +52,5 @@
     "maxInstancesCount": 50,
     "maxQueueSize": 500
   }
+  
 }

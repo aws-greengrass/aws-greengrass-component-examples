@@ -7,24 +7,21 @@
 set -eux
 
 while getopts ":i:" opt; do
-  case ${opt} in
-    i )
-      use_installer=$OPTARG
-      ;;
-    \? )
-      echo "Invalid option: $OPTARG" 1>&2
-      exit;;
-    : )
-      echo "Invalid option: $OPTARG requires an argument" 1>&2
-      exit;;
-  esac
+    case $opt in
+    i)
+        use_installer="$OPTARG"
+        ;;
+    \?)
+        echo "Invalid option -$OPTARG" >&2
+        ;;
+    esac
 done
 
 if [ "$use_installer" = true ]; then
-  echo "Running DLR install script...";
+    echo "Running DLR install script..."
 else
-  echo "Skipping installation of component dependencies.";
-  exit 0;
+    echo "Skipping installation of component dependencies."
+    exit 0
 fi
 
 kernel=$(uname -s)

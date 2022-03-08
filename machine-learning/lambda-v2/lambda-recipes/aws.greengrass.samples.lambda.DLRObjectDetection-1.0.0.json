@@ -1,6 +1,6 @@
 {
   "lambdaArn": "$LAMBDA_ARN$",
-  "componentName": "com.lambda.DLRImageClassification",
+  "componentName": "aws.greengrass.samples.lambda.DLRObjectDetection",
   "componentVersion": "$COMPONENT_VERSION$",
   "componentPlatforms": [
     {
@@ -26,11 +26,11 @@
       }
   ],
   "componentDependencies": {
-      "com.lambda.DLRImageClassification.Model": {
-        "versionRequirement": ">=1.0.0",
+      "aws.greengrass.samples.lambda.DLRObjectDetection.Model": {
+        "versionRequirement": "1.0.0",
         "dependencyType": "HARD"
       },
-      "com.lambda.DLR": {
+      "aws.greengrass.samples.lambda.DLR": {
         "versionRequirement": ">=1.6.0",
         "dependencyType": "HARD"
       }
@@ -41,8 +41,8 @@
         "isolationMode": "NoContainer"
     },
     "environmentVariables": {
-        "DLR_IC_MODEL_DIR": "{com.lambda.DLRImageClassification.Model:configuration:/ModelPath}",
-        "DLR_IC_LABELS": "{com.lambda.DLRImageClassification.Model:artifacts:path}/labels.txt"
+        "DLR_OD_MODEL_DIR": "{aws.greengrass.samples.lambda.DLRObjectDetection.Model:configuration:/ModelPath}",
+        "DLR_OD_LABELS": "{aws.greengrass.samples.lambda.DLRObjectDetection.Model:artifacts:path}/labels.txt"
     },
     "inputPayloadEncodingType": "json",
     "pinned": true,
@@ -52,5 +52,4 @@
     "maxInstancesCount": 50,
     "maxQueueSize": 500
   }
-  
 }

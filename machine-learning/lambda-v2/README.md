@@ -4,17 +4,17 @@ These example components are used to run sample image classification and object 
 
 
 Image Classification 
- - com.lambda.DLRImageClassification (No container mode)
- - com.lambda.Container.DLRImageClassification (Greengrass container mode)
- - com.lambda.DLRImageClassification.Model
+ - aws.greengrass.samples.lambda.DLRImageClassification (No container mode)
+ - aws.greengrass.samples.lambda.container.DLRImageClassification (Greengrass container mode)
+ - aws.greengrass.samples.lambda.DLRImageClassification.Model
 
 Object Detection
- - com.lambda.DLRObjectDetection (No container mode)
- - com.lambda.Container.DLRObjectDetection (Greengrass container mode)
- - com.lambda.DLRObjectDetection.Model
+ - aws.greengrass.samples.lambda.DLRObjectDetection (No container mode)
+ - aws.greengrass.samples.lambda.container.DLRObjectDetection (Greengrass container mode)
+ - aws.greengrass.samples.lambda.DLRObjectDetection.Model
 
 Runtime component 
-- com.lambda.DLR 
+- aws.greengrass.samples.lambda.DLR 
 
 ### Sample models   
 
@@ -23,7 +23,7 @@ pre-trained models from GlounCV Model zoo which are then compiled with AWS SageM
 
 Our samples use pre-trained resnet50_v1 model to perform Image Classification and pre-trained yolo3_darknet53_voc to perform Object Detection. 
 
-Download these sample models based on the inference. Example: To run image-classification inference on an aarch64 device, use `DLR-resnet50-aarch64-ImageClassification.tar.gz` as a model artifact in the `com.lambda.DLRImageClassification.Model` recipe for aarch64 support.
+Download these sample models based on the inference. Example: To run image-classification inference on an aarch64 device, use `DLR-resnet50-aarch64-ImageClassification.tar.gz` as a model artifact in the `aws.greengrass.samples.lambda.DLRImageClassification.Model` recipe for aarch64 support.
 
 Instructions on how to compile the models from the AWS console can be found [here](https://docs.aws.amazon.com/sagemaker/latest/dg/neo-job-compilation-console.html).
 
@@ -32,14 +32,11 @@ Instructions on how to compile the models from the AWS console can be found [her
 These sample components provide the following configuration parameters that can be customized at the time of deployment. 
 
 **Runtime components**
-`com.lambda.DLR` component installs DLR runtime and other python libraries like awsiotsdk, opencv-python and numpy as the component user directly on the device. 
+`aws.greengrass.samples.lambda.DLR` component installs DLR runtime and other python libraries like awsiotsdk, opencv-python and numpy as the component user directly on the device. 
 
 **Inference components**
 
-The following configuration is applicable for both the `com.lambda.DLRImageClassification` and 
-`com.lambda.DLRObjectDetection` inference components. 
-
-The com.lambda.DLRImageClassification and com.lambda.DLRObjectDetection inference components require the following configuration parameters. You specify these configuration values when you deploy the components. Because these component are Lambda function components, you can't set default configuration values in the component recipe. For more information, see [Update component configurations](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html).
+The `aws.greengrass.samples.lambda.DLRImageClassification` and `aws.greengrass.samples.lambda.DLRObjectDetection` inference components require the following configuration parameters. You specify these configuration values when you deploy the components. Because these component are Lambda function components, you can't set default configuration values in the component recipe. For more information, see [Update component configurations](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html).
 
 - **accessControl** (Optional) : The authorization policy that allows the component to publish MQTT messages to AWS IoT Core on the default notifications topic.
 
@@ -47,7 +44,7 @@ The com.lambda.DLRImageClassification and com.lambda.DLRObjectDetection inferenc
     ```
     "accessControl": {
         "aws.greengrass.ipc.mqttproxy": {
-            "com.lambda.DLR<InferenceType>:mqttproxy:1": {
+            "aws.greengrass.samples.lambda.DLR<InferenceType>:mqttproxy:1": {
                 "policyDescription": "Allows access to publish via topic lambda/dlr/<inference-type>.",
                 "operations": [
                     "aws.greengrass#PublishToIoTCore"
@@ -78,7 +75,7 @@ The com.lambda.DLRImageClassification and com.lambda.DLRObjectDetection inferenc
 
 **Model components**
 
-The following configuration is applicable for both the `com.lambda.DLRObjectDetection.Model` and the `com.lambda.DLRImageClassification.Model` model components.
+The following configuration is applicable for both the `aws.greengrass.samples.lambda.DLRObjectDetection.Model` and the `aws.greengrass.samples.lambda.DLRImageClassification.Model` model components.
 
 - **ModelPath** (Optional) : The path of the folder where the packaged model artifacts are unarchived. 
 
@@ -114,15 +111,15 @@ Follow the steps in order to prepare the component artifacts, recipes and create
 
     1.  Create the runtime component 
 
-        `python3 create_components.py -c com.lambda.DLR -b bucketName`
+        `python3 create_components.py -c aws.greengrass.samples.lambda.DLR -b bucketName`
 
     2.  Create the model component (ImageClassification)
 
-        `python3 create_components.py -c com.lambda.DLRImageClassification.Model -b bucketName` 
+        `python3 create_components.py -c aws.greengrass.samples.lambda.DLRImageClassification.Model -b bucketName` 
 
     3.  Create the lambda inference component (ImageClassification)
 
-        `python3 create_components.py -c com.lambda.DLRImageClassification -l <lambda-execution-role> -b bucketName` 
+        `python3 create_components.py -c aws.greengrass.samples.lambda.DLRImageClassification -l <lambda-execution-role> -b bucketName` 
 
 
     - This script creates a build folder with the prepared artifacts and upload them to the s3 bucket. The sample models are downloaded from the releases section based on the parameters inference type. This might take several minutes as the artifacts are prepared and uploaded to the desired S3 bucket. 

@@ -1,0 +1,59 @@
+{
+  "lambdaArn": "$LAMBDA_ARN$",
+  "componentName": "aws.greengrass.samples.lambda.container.DLRImageClassification",
+  "componentVersion": "$COMPONENT_VERSION$",
+  "componentPlatforms": [
+    {
+      "name": "Linux x86",
+      "attributes": {
+        "os": "linux",
+        "architecture": "amd64"
+      }
+    },
+    {
+      "name": "Linux aarch64",
+      "attributes": {
+        "os": "linux",
+        "architecture": "aarch64"
+      }
+    },
+    {
+      "name": "Linux armv7l",
+      "attributes": {
+        "os": "linux",
+        "architecture": "arm"
+      }
+    }
+  ],
+  "componentDependencies": {
+    "aws.greengrass.samples.lambda.DLRImageClassification.Model": {
+      "versionRequirement": ">=1.0.0",
+      "dependencyType": "HARD"
+    },
+    "aws.greengrass.samples.lambda.DLR": {
+      "versionRequirement": ">=1.6.0",
+      "dependencyType": "HARD"
+    }
+  },
+  "componentLambdaParameters": {
+    "linuxProcessParams": {
+      "containerParams": {
+        "memorySizeInKB": 1024000,
+        "mountROSysfs": false,
+        "volumes": [],
+        "devices": []
+      }
+    },
+    "environmentVariables": {
+      "DLR_IC_MODEL_DIR": "{aws.greengrass.samples.lambda.DLRImageClassification.Model:configuration:/ModelPath}",
+      "DLR_IC_LABELS": "{aws.greengrass.samples.lambda.DLRImageClassification.Model:artifacts:path}/labels.txt"
+    },
+    "inputPayloadEncodingType": "json",
+    "pinned": true,
+    "timeoutInSeconds": 120,
+    "statusTimeoutInSeconds": 30,
+    "maxIdleTimeInSeconds": 30,
+    "maxInstancesCount": 50,
+    "maxQueueSize": 500
+  }
+}
