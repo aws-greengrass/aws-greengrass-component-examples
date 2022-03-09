@@ -10,6 +10,7 @@ import urllib.request
 
 import boto3
 
+from time import sleep
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
@@ -93,10 +94,16 @@ def create_lambda(zip_file, component):
                 function_name
             )
         )
-        lambda_client.update_function_code(
+        response = lambda_client.update_function_code(
             FunctionName=function_name,
             ZipFile=code,
         )
+        rev_id = response["Version"]
+        res = lambda_client.get_function_configuration(FunctionName=function_name, Qualifier=rev_id)
+        while res["LastUpdateStatus"] == "InProgress":
+            res = lambda_client.get_function_configuration(FunctionName=function_name, Qualifier=rev_id)
+            sleep(2)
+            print(f"Lambda function - '{function_name}' code  update is in progress..")
 
 
 def download_model(build, models):
@@ -283,7 +290,7 @@ def skip_creation(component):
 
 def skip_lambda_component_creation(component):
     return skip_creation(component) or (
-        containerMode.lower() == "true" and ".Container" not in component
+        containerMode.lower() == "true" and ".container" not in component
     )
 
 
@@ -358,12 +365,12 @@ component_argument = args.componentName
 containerMode = args.containerMode
 
 inference_models = {
-    "com.lambda.DLRImageClassification.Model": [
+    "aws.greengrass.samples.lambda.DLRImageClassification.Model": [
         "DLR-resnet50-aarch64-cpu-ImageClassification.tar.gz",
         "DLR-resnet50-x86_64-cpu-ImageClassification.tar.gz",
         "DLR-resnet50-armv7l-cpu-ImageClassification.tar.gz",
     ],
-    "com.lambda.DLRObjectDetection.Model": [
+    "aws.greengrass.samples.lambda.DLRObjectDetection.Model": [
         "DLR-yolo3-aarch64-cpu-ObjectDetection.tar.gz",
         "DLR-yolo3-x86_64-cpu-ObjectDetection.tar.gz",
         "DLR-yolo3-armv7l-cpu-ObjectDetection.tar.gz",
