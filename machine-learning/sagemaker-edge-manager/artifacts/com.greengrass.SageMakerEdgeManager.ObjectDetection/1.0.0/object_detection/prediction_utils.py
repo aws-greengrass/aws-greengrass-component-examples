@@ -10,7 +10,7 @@ import config_utils
 import cv2
 import IPCUtils as ipc_utils
 import numpy as np
-from agent_pb2 import (
+from sagemaker_edge_agent_pb2 import (
     CaptureDataRequest,
     LoadModelRequest,
     PredictRequest,
@@ -125,7 +125,7 @@ def predict(image_data):
     input_tensors = [
         Tensor(
             tensor_metadata=TensorMetadata(
-                name=config_utils.tensor_name,
+                name=config_utils.tensor_name.encode(),
                 data_type=5,
                 shape=config_utils.tensor_shape,
             ),

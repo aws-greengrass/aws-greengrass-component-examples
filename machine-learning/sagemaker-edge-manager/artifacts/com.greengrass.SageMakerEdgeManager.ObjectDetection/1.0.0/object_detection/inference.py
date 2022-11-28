@@ -7,7 +7,7 @@ from time import sleep
 
 import config_utils
 import IPCUtils as ipc_utils
-from agent_pb2_grpc import AgentStub
+from sagemaker_edge_agent_pb2_grpc import AgentStub
 from grpc import insecure_channel
 from prediction_utils import load_image, load_model, predict_from_image, unload_model
 
