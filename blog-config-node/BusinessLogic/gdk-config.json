@@ -1,0 +1,19 @@
+{
+    "component": {
+        "BusinessLogic": {
+            "author": "Amazon",
+            "version": "NEXT_PATCH",
+            "build": {
+                "build_system": "zip",
+                "options": {
+                    "excludes": ["src", "*.d.ts", "*.js.map"]
+                }
+            },
+            "publish": {
+                "bucket": "greengrass-demos",
+                "region": "us-west-2"
+            }
+        }
+    },
+    "gdk_version": "1.0.0"
+}
