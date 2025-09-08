@@ -1,0 +1,12 @@
+awsiotsdk
+coreutils
+greengrass
+greengrassv
+iotcore
+mqtt
+nixos
+nixpkgs
+pkgs
+pyproject
+pytest
+yapf
