@@ -1,0 +1,29 @@
+---
+RecipeFormatVersion: "2020-01-25"
+ComponentName: "com.example.ConfigSubscriber"
+ComponentVersion: "1.0.0"
+ComponentType: "aws.greengrass.generic"
+ComponentDescription:
+  "Python component that subscribes to configuration updates"
+ComponentPublisher: "AWS"
+Manifests:
+  - Platform:
+      os: "linux"
+      runtime: "*"
+    Lifecycle:
+      install:
+        RequiresPrivilege: false
+        Script: "python3 -m venv ./venv && . ./venv/bin/activate && python3 -m
+          pip install\
+          \ awsiotsdk"
+      run:
+        RequiresPrivilege: false
+        Script:
+          ". ./venv/bin/activate && python3
+          {artifacts:path}/subscribe_to_configuration_update.py"
+    Artifacts:
+      - Uri: "file://subscribe_to_configuration_update.py"
+        Permission:
+          Read: "OWNER"
+          Execute: "NONE"
+Lifecycle: {}

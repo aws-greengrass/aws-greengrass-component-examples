@@ -1,6 +1,8 @@
 awsiotsdk
+clientv
 coreutils
 greengrass
+greengrasscoreipc
 greengrassv
 iotcore
 mqtt
@@ -9,4 +11,5 @@ nixpkgs
 pkgs
 pyproject
 pytest
+venv
 yapf
